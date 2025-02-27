@@ -1,0 +1,68 @@
+{
+	"compilerOptions": {
+		/* Basic Options */
+		"target": "esnext",
+		"module": "commonjs",
+		"lib": ["es5", "es6", "ES2021.String"],
+		"allowJs": false,
+		"checkJs": false,
+		"declaration": true,
+		"sourceMap": true,
+		"pretty": true,
+
+		/* Strict Type-Checking Options */
+		"alwaysStrict": true,
+		"strict": true,
+		"strictNullChecks": true,
+		"strictFunctionTypes": true,
+		"strictPropertyInitialization": true,
+		"strictBindCallApply": true,
+
+		/* Module Resolution Options */
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+
+		/* Source Map Options */
+		// "inlineSourceMap": true,
+		"inlineSources": true,
+
+		/* Experimental Options */
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+
+		/* Advanced Options */
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+
+		/* Additional Checks */
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+
+		/* Module Options */
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+
+		/* Type Checking */
+		// "isolatedModules": true,
+		// "noEmit": true,
+		"typeRoots": ["./node_modules/@types", "./types", "./packages/common-ts/types"],
+
+		"outDir": "./build"
+	},
+	"exclude": ["node_modules", "build"],
+	"ts-node": {
+		"require": ["tsconfig-paths/register"]
+	},
+	"references": [
+		{
+			"path": "./packages/client"
+		},
+		{
+			"path": "./packages/server"
+		}
+	]
+}
