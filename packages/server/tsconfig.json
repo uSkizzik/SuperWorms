@@ -1,16 +1,16 @@
 {
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "outDir": "./build",
-    "composite": true,
-    "rootDir": ".",
-    "skipLibCheck": true
-  },
-  "include": ["src", "./node_modules/@skizzium-api/common-ts"],
-  "exclude": ["node_modules", "./build"],
-  "references": [
-    {
-      "path": "../common-ts"
-    }
-  ]
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"outDir": "./build",
+		"composite": true,
+		"rootDir": ".",
+		"skipLibCheck": true
+	},
+	"include": ["src", "./node_modules/@skizzium-api/common-ts"],
+	"exclude": ["node_modules", "./build"],
+	"references": [
+		{
+			"path": "../common-ts"
+		}
+	]
 }

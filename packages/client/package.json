@@ -1,29 +1,29 @@
 {
-  "name": "@superowmrs/client",
-  "description": "Client project for SuperWorms",
-  "version": "1.0.0",
-  "author": "uSkizzik",
-  "license": "ISC",
-  "type": "module",
-  "main": "src/index.ts",
-  "engines": {
-    "node": ">= 20.9.0"
-  },
-  "scripts": {
-    "start": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "colyseus.js": "^0.16.3",
-    "phaser": "^3.88.2",
-    "vite": "^6.2.0"
-  },
-  "devDependencies": {
-    "http-server": "^14.1.1",
-    "nodemon": "^3.1.9",
-    "rimraf": "^5.0.0",
-    "tsx": "^4.10.2",
-    "vite": "^6.2.0"
-  }
+	"name": "@superowmrs/client",
+	"description": "Client project for SuperWorms",
+	"version": "1.0.0",
+	"author": "uSkizzik",
+	"license": "ISC",
+	"type": "module",
+	"main": "src/index.ts",
+	"engines": {
+		"node": ">= 20.9.0"
+	},
+	"scripts": {
+		"start": "vite",
+		"build": "tsc && vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"colyseus.js": "^0.16.3",
+		"phaser": "^3.88.2",
+		"vite": "^6.2.0"
+	},
+	"devDependencies": {
+		"http-server": "^14.1.1",
+		"nodemon": "^3.1.9",
+		"rimraf": "^5.0.0",
+		"tsx": "^4.10.2",
+		"vite": "^6.2.0"
+	}
 }
