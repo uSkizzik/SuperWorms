@@ -12,6 +12,8 @@ export class Game extends Phaser.Scene {
 	room?: Room<GameRoomState>
 
 	localPlayer?: Player
+
+	// Map of sessionIds to player actors
 	players: Map<string, Player> = new Map<string, Player>()
 
 	constructor() {
@@ -41,26 +43,45 @@ export class Game extends Phaser.Scene {
 		this.room = await this.gameClient.joinOrCreate<GameRoomState>("game_room")
 		const $ = getStateCallbacks(this.room)
 
-		this.room.onMessage("setup", () => {
-			$(this.room!.state).players.onAdd((player: PlayerState, sessionId: string) => {
-				// Create foreign player actor
-				this.players.set(sessionId, new Player(this, player.x, player.y))
+		// Add local player to player map
+		this.players.set(this.room.sessionId, this.localPlayer)
+		this.localPlayer.setDataEnabled()
 
-				$(player).listen("x", () => this.updatePlayerPosition(player, sessionId))
-				$(player).listen("y", () => this.updatePlayerPosition(player, sessionId))
+		this.room.onMessage("setup", () => {
+			$(this.room!.state).players.onAdd((playerState: PlayerState, sessionId: string) => {
+				// Create foreign player actor
+				if (sessionId !== this.room?.sessionId) this.players.set(sessionId, new Player(this, playerState.x, playerState.y))
+				this.players.get(sessionId)!.setDataEnabled()
+
+				$(playerState).listen("x", () => this.updatePlayerPosition(playerState, sessionId))
+				$(playerState).listen("y", () => this.updatePlayerPosition(playerState, sessionId))
 			})
 		})
 	}
 
 	update() {
 		this.localPlayer?.update()
+
+		this.players.forEach((player: Player) => {
+			// Interpolate all player entities
+			const { serverX, serverY } = player.data.values
+
+			player.headPos.x = Phaser.Math.Linear(player.headPos.x, serverX, 0.2)
+			player.headPos.y = Phaser.Math.Linear(player.headPos.y, serverY, 0.2)
+		})
 	}
 
 	updatePlayerPosition(playerState: PlayerState, sessionId: string) {
 		const playerActor = this.players.get(sessionId)
 		if (!playerActor) throw "Missing local player actor"
 
-		playerActor.headPos.x = playerState.x
-		playerActor.headPos.y = playerState.y
+		if (!this.room) throw "Missing local room"
+		const $ = getStateCallbacks(this.room)
+
+		playerActor.setData("serverX", playerState.x)
+		playerActor.setData("serverY", playerState.y)
+
+		// playerActor.headPos.x = playerState.x
+		// playerActor.headPos.y = playerState.y
 	}
 }
