@@ -1,7 +1,8 @@
 import Phaser from "phaser"
 import { Game } from "../scenes/Game.ts"
 
-import { RotateData } from "@superworms/server/src/rooms/messages/RotateData.ts"
+import { RotateData } from "@superworms/server/src/messages/RotateData.ts"
+import { calcPlayerMovement } from "@superworms/server/src/util"
 
 export class Player extends Phaser.GameObjects.GameObject {
 	scene: Game
@@ -12,7 +13,7 @@ export class Player extends Phaser.GameObjects.GameObject {
 	head: Phaser.GameObjects.Group
 	playerBody: Phaser.GameObjects.Group
 
-	lastAngle: number = 0
+	angle: number = 0
 	speed: number
 
 	constructor(scene: Game, x: number, y: number) {
@@ -38,8 +39,19 @@ export class Player extends Phaser.GameObjects.GameObject {
 		this.grow()
 	}
 
-	update() {
+	updateRemote() {
+		const { serverX, serverY } = this.data.values
+
+		this.headPos.x = Phaser.Math.Linear(this.headPos.x, serverX, 0.2)
+		this.headPos.y = Phaser.Math.Linear(this.headPos.y, serverY, 0.2)
+
+		Phaser.Actions.ShiftPosition(this.playerBody.getChildren(), this.headPos.x, this.headPos.y, 0, new Phaser.Math.Vector2(this.tailPos))
+	}
+
+	updateLocal() {
 		this.scene.input.activePointer.updateWorldPoint(this.scene.cameras.main)
+
+		const { worldX: ptrX, worldY: ptrY } = this.scene.input.activePointer
 
 		this.scene.room?.send("rotate", {
 			pointer: {
@@ -48,19 +60,7 @@ export class Player extends Phaser.GameObjects.GameObject {
 			}
 		} as RotateData)
 
-		// const dy = this.scene.input.activePointer.worldY - this.headPos.y // const dx = this.scene.input.activePointer.worldX - this.headPos.x
-		//
-		// const angle = Math.atan2(dy, dx)
-		//
-		// if (Math.abs(dx) > 1 || Math.abs(dy) > 1) {
-		// 	this.lastAngle = angle
-		// }
-
-		// console.log(this.lastAngle)
-
-		// this.headPos.x += (this.speed / 100) * Math.cos(this.lastAngle)
-		// this.headPos.y += (this.speed / 100) * Math.sin(this.lastAngle)
-
+		calcPlayerMovement(this, { x: ptrX, y: ptrY })
 		Phaser.Actions.ShiftPosition(this.playerBody.getChildren(), this.headPos.x, this.headPos.y, 0, new Phaser.Math.Vector2(this.tailPos))
 	}
 

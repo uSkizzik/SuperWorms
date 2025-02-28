@@ -1,5 +1,5 @@
 import { Schema, MapSchema, type } from "@colyseus/schema"
-import { normalSpeed } from "../../util/const"
+import { normalSpeed } from "../util/const"
 
 export class PlayerState extends Schema {
 	@type("number") angle: number = 0

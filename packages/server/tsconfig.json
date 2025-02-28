@@ -7,11 +7,7 @@
 		"skipLibCheck": true,
 		"useDefineForClassFields": false
 	},
-	"include": ["src", "./node_modules/@skizzium-api/common-ts"],
+	"include": ["src", "./node_modules/@superworms/common"],
 	"exclude": ["node_modules", "./build"],
-	"references": [
-		{
-			"path": "../common-ts"
-		}
-	]
+	"references": []
 }

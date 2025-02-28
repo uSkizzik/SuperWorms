@@ -49,11 +49,11 @@
 		/* Type Checking */
 		// "isolatedModules": true,
 		// "noEmit": true,
-		"typeRoots": ["./node_modules/@types", "./types", "./packages/common-ts/types"],
+		"typeRoots": ["./node_modules/@types", "./types", "./packages/common/types"],
 
 		"outDir": "./build"
 	},
-	"exclude": ["node_modules", "build"],
+	"exclude": ["node_modules", "./packages/common", "build"],
 	"ts-node": {
 		"require": ["tsconfig-paths/register"]
 	},

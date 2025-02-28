@@ -44,6 +44,17 @@
     debug "^4.3.4"
     nanoid "^2.0.0"
 
+"@colyseus/core@^0.16.8":
+  version "0.16.8"
+  resolved "https://registry.yarnpkg.com/@colyseus/core/-/core-0.16.8.tgz#1f911cd744cbeb5597f72f9c24d64a7020d01afd"
+  integrity sha512-izPqbpxgzEcG9t3R/gWFGrxanWScDhInQCJzk+RRQs/RJqWh9v0xtui7qvKMerWAuksUhwff9NAGeKaTbs9tLQ==
+  dependencies:
+    "@colyseus/greeting-banner" "^2.0.6"
+    "@colyseus/msgpackr" "^1.10.3"
+    "@colyseus/timer" "^1.0.1"
+    debug "^4.3.4"
+    nanoid "^2.0.0"
+
 "@colyseus/greeting-banner@^2.0.6":
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/@colyseus/greeting-banner/-/greeting-banner-2.0.6.tgz#7f51f1897e0c44f423f7e60e86eaadef3fa6f7f5"
@@ -89,6 +100,11 @@
   version "3.0.13"
   resolved "https://registry.yarnpkg.com/@colyseus/schema/-/schema-3.0.13.tgz#7e169d2722b75edf28aec7f8bf8bfd1a341cae63"
   integrity sha512-3tqVUdwKKbchnJkZfppHlFuF8cHhLj5PNDFOdIAIbmIdv5ji0uJgkVSiFDRVPwrVqdp0Duxrx5VlDwPYRxdwlg==
+
+"@colyseus/schema@^3.0.16":
+  version "3.0.16"
+  resolved "https://registry.yarnpkg.com/@colyseus/schema/-/schema-3.0.16.tgz#66cc786a743a2551a361daeea61fe268c70cbe61"
+  integrity sha512-E4DVXo7Dt372vTYl/wH/sNXnSL0nIyC9XT+Z5ls7SkijLac5V/YoefFT6m7ZpfMKb6mYHyj12GkGHhdZZ7RASw==
 
 "@colyseus/testing@^0.16.0":
   version "0.16.3"
@@ -1144,6 +1160,17 @@ colyseus.js@^0.16.0, colyseus.js@^0.16.3:
   version "0.16.3"
   resolved "https://registry.yarnpkg.com/colyseus.js/-/colyseus.js-0.16.3.tgz#32348eaad491e5608161467ef78403de0a59c510"
   integrity sha512-JyBz5D6Pmk10ACvivUc/WyMePmnSrC5DpYYBvM8bl4xfB3BQL7H5l94EPHA1VTII7rsjhXxew4OvbVr1viSA7g==
+  dependencies:
+    "@colyseus/msgpackr" "^1.10.5"
+    "@colyseus/schema" "^3.0.0"
+    httpie "^2.0.0-next.13"
+    tslib "^2.1.0"
+    ws "^8.13.0"
+
+colyseus.js@^0.16.9:
+  version "0.16.9"
+  resolved "https://registry.yarnpkg.com/colyseus.js/-/colyseus.js-0.16.9.tgz#19374c0e70eb7180052053d7c7a5162b0eaf7bc9"
+  integrity sha512-3K2df5CBFCs/u7KBEiCOH3im+bMH4hVqVDuUYqI+3Kd4X8iknljPvCEcy9xCkVOkZRZL1rH/6bDae/MZIIznIw==
   dependencies:
     "@colyseus/msgpackr" "^1.10.5"
     "@colyseus/schema" "^3.0.0"
