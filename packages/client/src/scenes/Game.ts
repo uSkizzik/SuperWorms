@@ -1,11 +1,11 @@
 import Phaser from "phaser"
-import { Client } from "colyseus.js"
+import { Client, getStateCallbacks } from "colyseus.js"
 
 import { Orb } from "../actors/Orb.ts"
 import { Player } from "../actors/Player.ts"
 
 import { Room } from "colyseus.js"
-import { GameRoomState } from "@superworms/server/src/rooms/schema/GameRoomState.ts"
+import { GameRoomState, PlayerState } from "@superworms/server/src/rooms/schema/GameRoomState.ts"
 
 export class Game extends Phaser.Scene {
 	gameClient: Client
@@ -39,23 +39,28 @@ export class Game extends Phaser.Scene {
 
 		// Create and setup room
 		this.room = await this.gameClient.joinOrCreate<GameRoomState>("game_room")
+		const $ = getStateCallbacks(this.room)
 
 		this.room.onMessage("setup", () => {
-			console.log(this.room?.state.players)
-			this.room?.state.players.onAdd((player, sessionId) => {
+			$(this.room!.state).players.onAdd((player: PlayerState, sessionId: string) => {
 				// Create foreign player actor
-				this.players[sessionId] = new Player(this, player.x, player.y)
+				this.players.set(sessionId, new Player(this, player.x, player.y))
 
-				player.onChange(() => {
-					// Update local position for other player on change
-					this.players[sessionId].x = player.x
-					this.players[sessionId].y = player.y
-				})
+				player.listen("x", () => this.updatePlayerPosition(player, sessionId))
+				player.listen("y", () => this.updatePlayerPosition(player, sessionId))
 			})
 		})
 	}
 
 	update() {
 		this.localPlayer?.update()
+	}
+
+	updatePlayerPosition(playerState: PlayerState, sessionId: string) {
+		const playerActor = this.players.get(sessionId)
+		if (!playerActor) throw "Missing local player actor"
+
+		playerActor.headPos.x = playerState.x
+		playerActor.headPos.y = playerState.y
 	}
 }
