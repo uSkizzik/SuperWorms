@@ -38,3 +38,5 @@ export function calcPlayerMovement(
 		player.headPos.y = newY
 	}
 }
+
+export * from "./const"

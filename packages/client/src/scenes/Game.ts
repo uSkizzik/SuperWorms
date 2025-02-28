@@ -1,7 +1,7 @@
 import Phaser from "phaser"
 import { Client, Room, getStateCallbacks } from "colyseus.js"
 
-import { GameRoomState, PlayerState } from "@superworms/server/src/schema/GameRoomState.ts"
+import type { GameRoomState, PlayerState } from "@superworms/server/src/schema/GameRoomState.ts"
 
 import { Orb } from "../actors/Orb.ts"
 import { Player } from "../actors/Player.ts"
@@ -32,7 +32,7 @@ export class Game extends Phaser.Scene {
 		this.localPlayer = new Player(this, 100, 100)
 		this.add.existing(this.localPlayer)
 
-		this.add.existing(new Orb(this, 1000, 1000, 50, 0x00ff00))
+		this.add.existing(new Orb(this, 500, 500, 1, 0x00ff00))
 
 		// Setup and focus camera on local player actor
 		this.cameras.main.zoomTo(1.5, 0.01)
@@ -53,6 +53,10 @@ export class Game extends Phaser.Scene {
 
 			$(playerState).listen("x", () => this.serverNewPositions(playerState, sessionId))
 			$(playerState).listen("y", () => this.serverNewPositions(playerState, sessionId))
+		})
+
+		$(this.room!.state).orbs.onAdd((orb) => {
+			new Orb(this, orb.x, orb.y, orb.score, orb.color)
 		})
 	}
 

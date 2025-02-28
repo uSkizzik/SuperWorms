@@ -1,7 +1,7 @@
 import Phaser from "phaser"
 import { Game } from "../scenes/Game.ts"
 
-import { RotateData } from "@superworms/server/src/messages/RotateData.ts"
+import type { RotateData } from "@superworms/server/src/messages/RotateData.ts"
 import { calcPlayerMovement } from "@superworms/server/src/util"
 
 export class Player extends Phaser.GameObjects.GameObject {

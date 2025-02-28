@@ -1,7 +1,30 @@
 import Phaser from "phaser"
+import { Game } from "../scenes/Game"
 
-export class Orb extends Phaser.GameObjects.Arc {
-	constructor(scene: Phaser.Scene, x: number, y: number, size: number, color: number) {
-		super(scene, x, y, 1, undefined, undefined, undefined, color)
+export class Orb extends Phaser.GameObjects.GameObject {
+	scene: Game
+
+	x: number
+	y: number
+
+	score: number
+	color: number
+
+	constructor(scene: Game, x: number, y: number, score: number, color: number) {
+		super(scene, "orb")
+
+		this.scene = scene
+
+		this.x = x
+		this.y = y
+
+		this.score = score
+		this.color = color
+
+		this.addToUpdateList()
+
+		this.scene.add.circle(this.x, this.y, this.score * 2, this.color)
 	}
+
+	preUpdate() {}
 }
