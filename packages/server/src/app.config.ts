@@ -5,6 +5,10 @@ import { playground } from "@colyseus/playground"
 import { GameRoom } from "./rooms/GameRoom"
 
 export default config({
+	options: {
+		devMode: true
+	},
+
 	initializeGameServer: (gameServer) => {
 		/**
 		 * Define your room handlers:

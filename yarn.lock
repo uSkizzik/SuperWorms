@@ -85,10 +85,10 @@
   resolved "https://registry.yarnpkg.com/@colyseus/schema/-/schema-3.0.11.tgz#e214b13490c6364f5c6d224a88d036fa71f1a482"
   integrity sha512-2FrIrlWEaRKRrCzLPvV+WV+ccNBVn2H3iy6DTKf+k0D42fmkJFrOdZv0KSRjDe+L8IXkCYvkKowmG2v4paQc7Q==
 
-"@colyseus/schema@^3.0.12":
-  version "3.0.12"
-  resolved "https://registry.yarnpkg.com/@colyseus/schema/-/schema-3.0.12.tgz#7e5d86ec19f539e70e8ec577c82435dd9569cbed"
-  integrity sha512-KifxbFwljtMTyvcMF6XIFczgblmHa4CsGT9bzIv/n/YE6keXekrCagRlO87epQy/8kmN+EapBivjWrZbQdPKUA==
+"@colyseus/schema@^3.0.13":
+  version "3.0.13"
+  resolved "https://registry.yarnpkg.com/@colyseus/schema/-/schema-3.0.13.tgz#7e169d2722b75edf28aec7f8bf8bfd1a341cae63"
+  integrity sha512-3tqVUdwKKbchnJkZfppHlFuF8cHhLj5PNDFOdIAIbmIdv5ji0uJgkVSiFDRVPwrVqdp0Duxrx5VlDwPYRxdwlg==
 
 "@colyseus/testing@^0.16.0":
   version "0.16.3"

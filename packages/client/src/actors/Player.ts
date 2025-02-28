@@ -1,6 +1,11 @@
 import Phaser from "phaser"
+import { Game } from "../scenes/Game.ts"
+
+import { RotateData } from "@superworms/server/src/rooms/messages/RotateData.ts"
 
 export class Player extends Phaser.GameObjects.GameObject {
+	scene: Game
+
 	headPos: Phaser.Geom.Point
 	tailPos: Phaser.Geom.Point
 
@@ -10,8 +15,10 @@ export class Player extends Phaser.GameObjects.GameObject {
 	lastAngle: number = 0
 	speed: number
 
-	constructor(scene: Phaser.Scene, x: number, y: number) {
+	constructor(scene: Game, x: number, y: number) {
 		super(scene, "player")
+
+		this.scene = scene
 
 		this.headPos = new Phaser.Geom.Point(x, y)
 		this.tailPos = new Phaser.Geom.Point(x, y)
@@ -34,8 +41,14 @@ export class Player extends Phaser.GameObjects.GameObject {
 	update() {
 		this.scene.input.activePointer.updateWorldPoint(this.scene.cameras.main)
 
-		// const dx = this.scene.input.activePointer.worldX - this.headPos.x
-		// const dy = this.scene.input.activePointer.worldY - this.headPos.y
+		this.scene.room?.send("rotate", {
+			pointer: {
+				x: this.scene.input.activePointer.worldX,
+				y: this.scene.input.activePointer.worldY
+			}
+		} as RotateData)
+
+		// const dy = this.scene.input.activePointer.worldY - this.headPos.y // const dx = this.scene.input.activePointer.worldX - this.headPos.x
 		//
 		// const angle = Math.atan2(dy, dx)
 		//
