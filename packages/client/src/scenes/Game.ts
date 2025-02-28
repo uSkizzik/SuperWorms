@@ -12,7 +12,7 @@ export class Game extends Phaser.Scene {
 	room?: Room<GameRoomState>
 
 	localPlayer?: Player
-	players: Map<string, Player>
+	players: Map<string, Player> = new Map<string, Player>()
 
 	constructor() {
 		super("Game")
@@ -46,8 +46,8 @@ export class Game extends Phaser.Scene {
 				// Create foreign player actor
 				this.players.set(sessionId, new Player(this, player.x, player.y))
 
-				player.listen("x", () => this.updatePlayerPosition(player, sessionId))
-				player.listen("y", () => this.updatePlayerPosition(player, sessionId))
+				$(player).listen("x", () => this.updatePlayerPosition(player, sessionId))
+				$(player).listen("y", () => this.updatePlayerPosition(player, sessionId))
 			})
 		})
 	}
