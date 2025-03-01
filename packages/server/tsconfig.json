@@ -9,5 +9,9 @@
 	},
 	"include": ["src", "./node_modules/@superworms/common"],
 	"exclude": ["node_modules", "./build"],
-	"references": []
+	"references": [
+		{
+			"path": "../client"
+		}
+	]
 }

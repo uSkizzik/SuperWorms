@@ -3,11 +3,14 @@ import { Room, Client } from "@colyseus/core"
 import { GameRoomState, OrbState, PlayerState } from "../schema/GameRoomState"
 import { RotateData } from "../messages/RotateData"
 
-import { calcPlayerMovement, mapRadius } from "../util"
+import { PlayerController } from "../actors/PlayerController"
+import { mapRadius, tickRate } from "../util"
 
 export class GameRoom extends Room<GameRoomState> {
 	maxClients = 100
 	state = new GameRoomState()
+
+	serverControllers = new Map<string, PlayerController>()
 
 	onCreate(_options: any) {
 		console.log("room", this.roomId, "created...")
@@ -30,21 +33,39 @@ export class GameRoom extends Room<GameRoomState> {
 
 		this.state.orbs.push(...orbs)
 
-		this.onMessage("rotate", (client, data: RotateData) => {
-			const player = this.state.players.get(client.sessionId)
-			if (player == undefined) return
+		// Set server tick-rate to a fixed 128
+		let elapsedTime = 0
+		this.setSimulationInterval((deltaTime) => {
+			elapsedTime += deltaTime
 
-			calcPlayerMovement(player, data.pointer)
+			while (elapsedTime >= tickRate) {
+				elapsedTime -= tickRate
+				this.fixedTick(tickRate)
+			}
+		})
+
+		this.onMessage("rotate", (client, data: RotateData) => {
+			const controller = this.serverControllers.get(client.sessionId)
+			if (controller == undefined) return
+
+			controller.calculateMovement(data.pointer)
 		})
 	}
 
+	fixedTick(tickRate: number) {}
+
 	onJoin(client: Client, _options: any) {
 		console.log(client.sessionId, "joined")
-		this.state.players.set(client.sessionId, new PlayerState())
+
+		let state = new PlayerState()
+
+		this.state.players.set(client.sessionId, state)
+		this.serverControllers.set(client.sessionId, new PlayerController(state))
 	}
 
 	onLeave(client: Client, _consented: boolean) {
 		this.state.players.delete(client.sessionId)
+		this.serverControllers.delete(client.sessionId)
 	}
 
 	onDispose() {

@@ -1,6 +1,7 @@
 import Phaser from "phaser"
 import { Client, Room, getStateCallbacks } from "colyseus.js"
 
+import { PlayerController } from "@superworms/server/src/actors/PlayerController"
 import type { GameRoomState, PlayerState } from "@superworms/server/src/schema/GameRoomState.ts"
 
 import { Orb } from "../actors/Orb.ts"
@@ -12,8 +13,8 @@ export class Game extends Phaser.Scene {
 
 	localPlayer?: Player
 
-	// Map of sessionIds to player actors
-	players: Map<string, Player> = new Map<string, Player>()
+	// Map of sessionIds to player controllers
+	players: Map<string, PlayerController> = new Map<string, PlayerController>()
 
 	constructor() {
 		super("Game")
@@ -43,38 +44,41 @@ export class Game extends Phaser.Scene {
 		const $ = getStateCallbacks(this.room)
 
 		// Add local player to player map
-		this.players.set(this.room.sessionId, this.localPlayer)
 		this.localPlayer.setDataEnabled()
 
 		$(this.room!.state).players.onAdd((playerState: PlayerState, sessionId: string) => {
-			// Create foreign player actor
-			if (sessionId !== this.room?.sessionId) this.players.set(sessionId, new Player(this, playerState.x, playerState.y))
-			this.players.get(sessionId)!.setDataEnabled()
+			// Create player controller and player actor (only if remote) and save it to the PC array
+			if (sessionId !== this.room?.sessionId) {
+				let actor = new Player(this, playerState.x, playerState.y)
+				this.players.set(sessionId, new PlayerController(playerState, actor))
+			} else this.players.set(this.room.sessionId, new PlayerController(playerState, this.localPlayer))
+
+			this.players.get(sessionId)!.actor!.setDataEnabled()
 
 			$(playerState).listen("x", () => this.serverNewPositions(playerState, sessionId))
 			$(playerState).listen("y", () => this.serverNewPositions(playerState, sessionId))
 		})
 
-		$(this.room!.state).orbs.onAdd((orb) => {
-			new Orb(this, orb.x, orb.y, orb.score, orb.color)
-		})
+		// $(this.room!.state).orbs.onAdd((orb) => {
+		// 	new Orb(this, orb.x, orb.y, orb.score, orb.color)
+		// })
 	}
 
 	update() {
 		this.localPlayer?.updateLocal()
 
 		this.players.forEach((player, sessionId) => {
-			if (sessionId !== this.room?.sessionId) player.updateRemote()
+			if (sessionId !== this.room?.sessionId) player.actor!.updateRemote()
 		})
 	}
 
 	serverNewPositions(playerState: PlayerState, sessionId: string) {
-		const playerActor = this.players.get(sessionId)
-		if (!playerActor) throw "Missing local player actor"
+		const controller = this.players.get(sessionId)
+		if (!controller) throw "Missing local player actor"
 
 		if (!this.room) throw "Missing local room"
 
-		playerActor.setData("serverX", playerState.x)
-		playerActor.setData("serverY", playerState.y)
+		controller.actor!.setData("serverX", playerState.x)
+		controller.actor!.setData("serverY", playerState.y)
 	}
 }

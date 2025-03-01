@@ -1,11 +1,12 @@
 import Phaser from "phaser"
 import { Game } from "../scenes/Game.ts"
 
+import { PlayerController } from "@superworms/server/src/actors/PlayerController"
 import type { RotateData } from "@superworms/server/src/messages/RotateData.ts"
-import { calcPlayerMovement } from "@superworms/server/src/util"
 
 export class Player extends Phaser.GameObjects.GameObject {
 	scene: Game
+	controller?: PlayerController
 
 	headPos: Phaser.Geom.Point
 	tailPos: Phaser.Geom.Point
@@ -60,7 +61,7 @@ export class Player extends Phaser.GameObjects.GameObject {
 			}
 		} as RotateData)
 
-		calcPlayerMovement(this, { x: ptrX, y: ptrY })
+		this.controller?.calculateMovement({ x: ptrX, y: ptrY })
 		Phaser.Actions.ShiftPosition(this.playerBody.getChildren(), this.headPos.x, this.headPos.y, 0, new Phaser.Math.Vector2(this.tailPos))
 	}
 
