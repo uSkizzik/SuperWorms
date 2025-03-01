@@ -1,8 +1,8 @@
 import Phaser from "phaser"
-import { Game } from "../scenes/Game.ts"
+import { Game } from "../scenes/Game"
 
 import { PlayerController } from "@superworms/server/src/actors/PlayerController"
-import type { RotateData } from "@superworms/server/src/messages/RotateData.ts"
+import type { RotateData } from "@superworms/server/src/messages/RotateData"
 
 export class Player extends Phaser.GameObjects.GameObject {
 	scene: Game
@@ -16,6 +16,8 @@ export class Player extends Phaser.GameObjects.GameObject {
 
 	angle: number = 0
 	speed: number
+
+	private refreshTimer: Phaser.Time.TimerEvent
 
 	constructor(scene: Game, x: number, y: number) {
 		super(scene, "player")
@@ -31,6 +33,14 @@ export class Player extends Phaser.GameObjects.GameObject {
 		this.head.setOrigin(0.5)
 
 		this.speed = 150
+
+		// Refresh local player position from server once 3 seconds to avoid desync
+		// this.refreshTimer = this.scene.time.addEvent({
+		// 	callback: this.updateRemote,
+		// 	callbackScope: this,
+		// 	delay: 3000,
+		// 	loop: true
+		// })
 
 		this.grow()
 		this.grow()

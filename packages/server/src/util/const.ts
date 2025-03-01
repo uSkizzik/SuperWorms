@@ -1,4 +1,4 @@
-export const normalMagnetRadius = 10
+export const normalMagnetRadius = 20
 
 export const normalSpeed = 150
 

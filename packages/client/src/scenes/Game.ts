@@ -1,15 +1,16 @@
 import Phaser from "phaser"
-import { Client, Room, getStateCallbacks } from "colyseus.js"
+import { Client, getStateCallbacks } from "colyseus.js"
 
 import { PlayerController } from "@superworms/server/src/actors/PlayerController"
 import type { GameRoomState, PlayerState } from "@superworms/server/src/schema/GameRoomState.ts"
+import type { GameRoom } from "@superworms/server/src/rooms/GameRoom.ts"
 
-import { Orb } from "../actors/Orb.ts"
-import { Player } from "../actors/Player.ts"
+import { Player } from "../actors/Player"
+import { Orb } from "../actors/Orb"
 
 export class Game extends Phaser.Scene {
 	gameClient: Client
-	room?: Room<GameRoomState>
+	room?: GameRoom
 
 	localPlayer?: Player
 
@@ -46,12 +47,16 @@ export class Game extends Phaser.Scene {
 		// Add local player to player map
 		this.localPlayer.setDataEnabled()
 
-		$(this.room!.state).players.onAdd((playerState: PlayerState, sessionId: string) => {
+		$(this.room.state).players.onAdd((playerState: PlayerState, sessionId: string) => {
 			// Create player controller and player actor (only if remote) and save it to the PC array
-			if (sessionId !== this.room?.sessionId) {
+			if (sessionId !== this.room!.sessionId) {
 				let actor = new Player(this, playerState.x, playerState.y)
-				this.players.set(sessionId, new PlayerController(playerState, actor))
-			} else this.players.set(this.room.sessionId, new PlayerController(playerState, this.localPlayer))
+				let controller = new PlayerController(playerState, this.room!, actor)
+
+				this.players.set(sessionId, controller)
+			} else {
+				this.players.set(this.room!.sessionId, new PlayerController(playerState, this.room!, this.localPlayer))
+			}
 
 			this.players.get(sessionId)!.actor!.setDataEnabled()
 
@@ -59,9 +64,9 @@ export class Game extends Phaser.Scene {
 			$(playerState).listen("y", () => this.serverNewPositions(playerState, sessionId))
 		})
 
-		// $(this.room!.state).orbs.onAdd((orb) => {
-		// 	new Orb(this, orb.x, orb.y, orb.score, orb.color)
-		// })
+		$(this.room!.state).orbs.onAdd((orb) => {
+			new Orb(this, orb.x, orb.y, orb.score, orb.color)
+		})
 	}
 
 	update() {
@@ -74,7 +79,7 @@ export class Game extends Phaser.Scene {
 
 	serverNewPositions(playerState: PlayerState, sessionId: string) {
 		const controller = this.players.get(sessionId)
-		if (!controller) throw "Missing local player actor"
+		if (!controller) throw "Missing player actor"
 
 		if (!this.room) throw "Missing local room"
 

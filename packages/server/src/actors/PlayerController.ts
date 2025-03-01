@@ -1,18 +1,50 @@
-import { Player } from "../../../client/src/actors/Player"
+import { Actor } from "./Actor"
 import { PlayerState } from "../schema/GameRoomState"
+import { GameRoom } from "../rooms/GameRoom"
+
+import { Player } from "../../../client/src/actors/Player"
+import { normalMagnetRadius } from "../util"
 
 /**
  * Shared player logic that runs on both client and server
  */
-export class PlayerController {
+export class PlayerController extends Actor {
 	state: PlayerState
+	room: GameRoom
 	actor?: Player
 
-	constructor(state: PlayerState, actor?: Player) {
+	constructor(state: PlayerState, room: GameRoom, actor?: Player) {
+		super()
+
 		this.state = state
+		this.room = room
 		this.actor = actor
 
 		if (this.actor) this.actor.controller = this
+	}
+
+	/**
+	 * Determines whether this function is ran on the server
+	 */
+	isServer() {
+		return !this.actor
+	}
+
+	/**
+	 * Runs every tick
+	 */
+	tick() {
+		if (this.isServer()) {
+			let nearestOrb = this.room.orbSpawner.findNearest(
+				{
+					x: this.state.x,
+					y: this.state.y
+				},
+				normalMagnetRadius
+			)
+
+			if (nearestOrb) console.log(nearestOrb)
+		}
 	}
 
 	/**
