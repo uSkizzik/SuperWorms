@@ -31,7 +31,7 @@ export class Game extends Phaser.Scene {
 		this.background = this.add.tileSprite(0, 0, 10_000, 10_000, "bg")
 
 		// Spawn local player actor
-		this.localPlayer = new Player(this, 100, 100)
+		this.localPlayer = new Player(this, 0, 0)
 		this.add.existing(this.localPlayer)
 
 		this.add.existing(new Orb(this, 500, 500, 1, 0x00ff00))
@@ -44,18 +44,15 @@ export class Game extends Phaser.Scene {
 		this.room = await this.gameClient.joinOrCreate<GameRoomState>("game_room")
 		const $ = getStateCallbacks(this.room)
 
-		// Add local player to player map
-		this.localPlayer.setDataEnabled()
-
 		$(this.room.state).players.onAdd((playerState: PlayerState, sessionId: string) => {
 			// Create player controller and player actor (only if remote) and save it to the PC array
 			if (sessionId !== this.room!.sessionId) {
 				let actor = new Player(this, playerState.x, playerState.y)
-				let controller = new PlayerController(playerState, this.room!, actor)
+				let controller = new PlayerController(sessionId, playerState, this.room!, actor)
 
 				this.players.set(sessionId, controller)
 			} else {
-				this.players.set(this.room!.sessionId, new PlayerController(playerState, this.room!, this.localPlayer))
+				this.players.set(sessionId, new PlayerController(sessionId, playerState, this.room!, this.localPlayer))
 			}
 
 			this.players.get(sessionId)!.actor!.setDataEnabled()
@@ -66,14 +63,6 @@ export class Game extends Phaser.Scene {
 
 		$(this.room!.state).orbs.onAdd((orb) => {
 			new Orb(this, orb.x, orb.y, orb.score, orb.color)
-		})
-	}
-
-	update() {
-		this.localPlayer?.updateLocal()
-
-		this.players.forEach((player, sessionId) => {
-			if (sessionId !== this.room?.sessionId) player.actor!.updateRemote()
 		})
 	}
 

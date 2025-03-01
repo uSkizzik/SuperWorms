@@ -1,4 +1,7 @@
 import Phaser from "phaser"
+
+import { fpsLimit } from "@superworms/server/src/util"
+
 import { Game } from "./scenes/Game"
 
 const config = {
@@ -12,6 +15,9 @@ const config = {
 	scale: {
 		mode: Phaser.Scale.RESIZE,
 		autoCenter: Phaser.Scale.CENTER_BOTH
+	},
+	fps: {
+		limit: fpsLimit
 	}
 }
 new Phaser.Game(config)

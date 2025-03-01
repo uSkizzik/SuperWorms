@@ -9,5 +9,8 @@ export abstract class Actor {
 		Actor.actors = Actor.actors.filter((a: Actor) => a === this)
 	}
 
+	/**
+	 * Called on every server tick which happens on a set tick rate
+	 */
 	tick(): any {}
 }

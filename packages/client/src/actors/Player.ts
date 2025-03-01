@@ -34,13 +34,7 @@ export class Player extends Phaser.GameObjects.GameObject {
 
 		this.speed = 150
 
-		// Refresh local player position from server once 3 seconds to avoid desync
-		// this.refreshTimer = this.scene.time.addEvent({
-		// 	callback: this.updateRemote,
-		// 	callbackScope: this,
-		// 	delay: 3000,
-		// 	loop: true
-		// })
+		this.addToUpdateList()
 
 		this.grow()
 		this.grow()
@@ -50,28 +44,39 @@ export class Player extends Phaser.GameObjects.GameObject {
 		this.grow()
 	}
 
-	updateRemote() {
+	preUpdate(delta: number) {
+		if (this.controller) {
+			if (this.scene!.room.sessionId === this.controller.sessionId) {
+				// Update local player actor
+				this.scene.input.activePointer.updateWorldPoint(this.scene.cameras.main)
+
+				const { worldX: ptrX, worldY: ptrY } = this.scene.input.activePointer
+
+				this.scene.room?.send("rotate", {
+					pointer: {
+						x: this.scene.input.activePointer.worldX,
+						y: this.scene.input.activePointer.worldY
+					}
+				} as RotateData)
+
+				this.controller?.calculateAngle({ x: ptrX, y: ptrY })
+				this.controller?.calculateMovement()
+
+				Phaser.Actions.ShiftPosition(this.playerBody.getChildren(), this.headPos.x, this.headPos.y, 0, new Phaser.Math.Vector2(this.tailPos))
+
+				this.updateRemotePos()
+			} else this.updateRemotePos()
+		}
+	}
+
+	updateRemotePos() {
+		if (!this.data) return
+
 		const { serverX, serverY } = this.data.values
 
 		this.headPos.x = Phaser.Math.Linear(this.headPos.x, serverX, 0.2)
 		this.headPos.y = Phaser.Math.Linear(this.headPos.y, serverY, 0.2)
 
-		Phaser.Actions.ShiftPosition(this.playerBody.getChildren(), this.headPos.x, this.headPos.y, 0, new Phaser.Math.Vector2(this.tailPos))
-	}
-
-	updateLocal() {
-		this.scene.input.activePointer.updateWorldPoint(this.scene.cameras.main)
-
-		const { worldX: ptrX, worldY: ptrY } = this.scene.input.activePointer
-
-		this.scene.room?.send("rotate", {
-			pointer: {
-				x: this.scene.input.activePointer.worldX,
-				y: this.scene.input.activePointer.worldY
-			}
-		} as RotateData)
-
-		this.controller?.calculateMovement({ x: ptrX, y: ptrY })
 		Phaser.Actions.ShiftPosition(this.playerBody.getChildren(), this.headPos.x, this.headPos.y, 0, new Phaser.Math.Vector2(this.tailPos))
 	}
 

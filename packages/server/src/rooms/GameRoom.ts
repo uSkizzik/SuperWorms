@@ -1,6 +1,6 @@
 import { Room, Client } from "@colyseus/core"
 
-import { GameRoomState, OrbState, PlayerState } from "../schema/GameRoomState"
+import { GameRoomState, PlayerState } from "../schema/GameRoomState"
 import { RotateData } from "../messages/RotateData"
 
 import { OrbSpawner } from "../actors/OrbSpawner"
@@ -20,27 +20,17 @@ export class GameRoom extends Room<GameRoomState> {
 		console.log("room", this.roomId, "created...")
 
 		this.orbSpawner.spawnInitialOrbs()
-
-		// Set server tick-rate to a fixed 128
-		let elapsedTime = 0
-		this.setSimulationInterval((deltaTime) => {
-			elapsedTime += deltaTime
-
-			while (elapsedTime >= tickRate) {
-				elapsedTime -= tickRate
-				this.tick(tickRate)
-			}
-		})
+		this.setSimulationInterval(this.tick, tickRate)
 
 		this.onMessage("rotate", (client, data: RotateData) => {
 			const controller = this.serverControllers.get(client.sessionId)
 			if (controller == undefined) return
 
-			controller.calculateMovement(data.pointer)
+			controller.calculateAngle(data.pointer)
 		})
 	}
 
-	private tick(_tickRate: number) {
+	private tick(deltaTime: number) {
 		for (const actor of Actor.actors) {
 			actor.tick()
 		}
@@ -52,7 +42,7 @@ export class GameRoom extends Room<GameRoomState> {
 		let state = new PlayerState()
 
 		this.state.players.set(client.sessionId, state)
-		this.serverControllers.set(client.sessionId, new PlayerController(state, this))
+		this.serverControllers.set(client.sessionId, new PlayerController(client.sessionId, state, this))
 	}
 
 	onLeave(client: Client, _consented: boolean) {

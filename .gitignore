@@ -136,3 +136,4 @@ files-old/
 packages/**/build
 
 build/
+packages/server/.devmode.json
