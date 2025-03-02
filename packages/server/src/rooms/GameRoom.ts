@@ -7,7 +7,7 @@ import { OrbSpawner } from "../actors/OrbSpawner"
 import { PlayerController } from "../actors/PlayerController"
 
 import { tickRate } from "../util"
-import { Actor } from "../actors/Actor"
+import { Controller } from "../actors/Controller"
 
 export class GameRoom extends Room<GameRoomState> {
 	maxClients = 100
@@ -31,7 +31,7 @@ export class GameRoom extends Room<GameRoomState> {
 	}
 
 	private tick(deltaTime: number) {
-		for (const actor of Actor.actors) {
+		for (const actor of Controller.controllers) {
 			actor.tick()
 		}
 	}

@@ -1,6 +1,6 @@
 import { kdTree } from "kd-tree-javascript"
 
-import { Actor } from "./Actor"
+import { Controller } from "./Controller"
 
 import { OrbState } from "../schema/GameRoomState"
 import { GameRoom } from "../rooms/GameRoom"
@@ -10,7 +10,7 @@ import { mapRadius } from "../util"
 /**
  * Shared player logic that runs on both client and server
  */
-export class OrbSpawner extends Actor {
+export class OrbSpawner extends Controller {
 	room: GameRoom
 
 	private tree: kdTree<OrbState> = new kdTree([], this.treeDistance, ["x", "y"])

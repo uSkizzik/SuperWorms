@@ -7,17 +7,17 @@ import { PlayerController } from "@superworms/server/src/actors/PlayerController
 import type { GameRoomState, PlayerState } from "@superworms/server/src/schema/GameRoomState.ts"
 import type { GameRoom } from "@superworms/server/src/rooms/GameRoom.ts"
 
-import { Player } from "../actors/Player"
-import { Orb } from "../actors/Orb"
+import { PlayerActor } from "../actors/PlayerActor"
+import { OrbActor } from "../actors/OrbActor"
 
 export class Game extends Phaser.Scene {
 	gameClient: Client
 	room?: GameRoom
 
-	localPlayer?: Player
+	localPlayer?: PlayerActor
 
 	// Map of orb UUIDs to orb actors
-	orbs = new Map<string, Orb>()
+	orbs = new Map<string, OrbActor>()
 	// Map of sessionIds to player controllers
 	players = new Map<string, PlayerController>()
 
@@ -35,10 +35,10 @@ export class Game extends Phaser.Scene {
 		this.background = this.add.tileSprite(0, 0, 10_000, 10_000, "bg")
 
 		// Spawn local player actor
-		this.localPlayer = new Player(this, 0, 0)
+		this.localPlayer = new PlayerActor(this, 0, 0)
 		this.add.existing(this.localPlayer)
 
-		this.add.existing(new Orb(this, 500, 500, 1, 0x00ff00))
+		this.add.existing(new OrbActor(this, 500, 500, 1, 0x00ff00))
 
 		// Setup and focus camera on local player actor
 		this.cameras.main.zoomTo(1.5, 0.01)
@@ -51,7 +51,7 @@ export class Game extends Phaser.Scene {
 		$(this.room.state).players.onAdd((playerState: PlayerState, sessionId: string) => {
 			// Create player controller and player actor (only if remote) and save it to the PC array
 
-			let actor = sessionId !== this.room!.sessionId ? new Player(this, playerState.x, playerState.y) : this.localPlayer!
+			let actor = sessionId !== this.room!.sessionId ? new PlayerActor(this, playerState.x, playerState.y) : this.localPlayer!
 			let controller = new PlayerController(sessionId, playerState, this.room!, actor)
 
 			this.players.set(sessionId, controller)
@@ -63,7 +63,7 @@ export class Game extends Phaser.Scene {
 		})
 
 		$(this.room!.state).orbs.onAdd((orb) => {
-			this.orbs.set(orb.id, new Orb(this, orb.x, orb.y, orb.score, orb.color))
+			this.orbs.set(orb.id, new OrbActor(this, orb.x, orb.y, orb.score, orb.color))
 		})
 
 		$(this.room!.state).orbs.onRemove((orb) => {

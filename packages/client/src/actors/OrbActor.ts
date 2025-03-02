@@ -1,7 +1,7 @@
 import Phaser from "phaser"
 import { Game } from "../scenes/Game"
 
-export class Orb extends Phaser.GameObjects.GameObject {
+export class OrbActor extends Phaser.GameObjects.GameObject {
 	scene: Game
 
 	x: number

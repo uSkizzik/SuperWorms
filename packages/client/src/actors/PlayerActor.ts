@@ -5,7 +5,7 @@ import { PlayerController } from "@superworms/server/src/actors/PlayerController
 import type { RotateData } from "@superworms/server/src/messages/RotateData"
 import { normalSpeed } from "@superworms/server/src/util"
 
-export class Player extends Phaser.GameObjects.GameObject {
+export class PlayerActor extends Phaser.GameObjects.GameObject {
 	scene: Game
 	controller?: PlayerController
 

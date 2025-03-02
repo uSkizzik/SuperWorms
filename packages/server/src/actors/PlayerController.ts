@@ -1,20 +1,20 @@
-import { Actor } from "./Actor"
+import { Controller } from "./Controller"
 import { PlayerState } from "../schema/GameRoomState"
 import { GameRoom } from "../rooms/GameRoom"
 
-import { Player } from "../../../client/src/actors/Player"
+import { PlayerActor } from "../../../client/src/actors/PlayerActor"
 import { normalMagnetRadius } from "../util"
 
 /**
  * Shared player logic that runs on both client and server
  */
-export class PlayerController extends Actor {
+export class PlayerController extends Controller {
 	sessionId: string
 	state: PlayerState
 	room: GameRoom
-	actor?: Player
+	actor?: PlayerActor
 
-	constructor(sessionId: string, state: PlayerState, room: GameRoom, actor?: Player) {
+	constructor(sessionId: string, state: PlayerState, room: GameRoom, actor?: PlayerActor) {
 		super()
 
 		this.sessionId = sessionId
