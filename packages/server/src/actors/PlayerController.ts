@@ -3,7 +3,7 @@ import { PlayerState } from "../schema/GameRoomState"
 import { GameRoom } from "../rooms/GameRoom"
 
 import { PlayerActor } from "../../../client/src/actors/PlayerActor"
-import { normalMagnetRadius } from "../util"
+import { normalMagnetRadius, normalSpeed, sprintSpeed } from "../util"
 
 /**
  * Shared player logic that runs on both client and server
@@ -51,7 +51,30 @@ export class PlayerController extends Controller {
 				this.room.orbSpawner.removeOrb(nearestOrb)
 				this.state.score += nearestOrb.score
 			}
+
+			if (this.state.isSprinting) this.state.score -= 1
+			if (this.state.score <= 10) this.stopSprint()
 		}
+	}
+
+	startSprint() {
+		if (!this.isServer()) {
+			this.room.send("startSprint")
+			return
+		}
+
+		this.state.isSprinting = true
+		this.state.speed = sprintSpeed
+	}
+
+	stopSprint() {
+		if (!this.isServer()) {
+			this.room.send("stopSprint")
+			return
+		}
+
+		this.state.isSprinting = false
+		this.state.speed = normalSpeed
 	}
 
 	/**

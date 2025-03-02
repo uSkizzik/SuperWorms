@@ -19,7 +19,9 @@ export class PlayerState extends Schema {
 	@type("number") x: number = 0
 	@type("number") y: number = 0
 
+	@type("boolean") isSprinting: boolean = false
 	@type("number") speed: number = normalSpeed
+
 	@type("number") score: number = 10
 }
 

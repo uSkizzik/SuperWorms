@@ -1,6 +1,7 @@
 export const normalMagnetRadius = 20
 
-export const normalSpeed = 400
+export const normalSpeed = 350
+export const sprintSpeed = 650
 
 export const mapRadius = 2000
 

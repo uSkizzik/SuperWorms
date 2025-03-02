@@ -35,6 +35,9 @@ export class PlayerActor extends Phaser.GameObjects.GameObject {
 
 		this.addToUpdateList()
 		this.updateLength(10)
+
+		this.scene.input.on("pointerdown", () => this.controller!.startSprint())
+		this.scene.input.on("pointerup", () => this.controller!.stopSprint())
 	}
 
 	preUpdate(delta: number) {
@@ -74,12 +77,19 @@ export class PlayerActor extends Phaser.GameObjects.GameObject {
 	}
 
 	updateLength(value) {
-		for (let i = 0; i < value - this.score; i++) {
-			this.grow()
-		}
-	}
+		let diff = value - this.score
+		this.score = value
 
-	grow() {
-		this.playerBody.create(this.tailPos.x, this.tailPos.y, "body").setOrigin(0.5)
+		if (diff > 0) {
+			for (let i = 0; i < diff; i++) {
+				this.playerBody.create(this.tailPos.x, this.tailPos.y, "body").setOrigin(0.5)
+			}
+		} else {
+			let bodyParts = this.playerBody.getChildren()
+
+			for (let i = 0; i < diff * -1; i++) {
+				this.playerBody.remove(bodyParts[bodyParts.length - i], true, true)
+			}
+		}
 	}
 }
