@@ -1,7 +1,12 @@
-import { Schema, MapSchema, type, ArraySchema } from "@colyseus/schema"
-import { normalSpeed } from "../util/const"
+import * as crypto from "crypto"
+
+import { Schema, MapSchema, type, CollectionSchema } from "@colyseus/schema"
+
+import { normalSpeed } from "../util"
 
 export class OrbState extends Schema {
+	@type("string") id = crypto.randomUUID()
+
 	@type("number") x: number = 0
 	@type("number") y: number = 0
 
@@ -15,9 +20,10 @@ export class PlayerState extends Schema {
 	@type("number") y: number = 0
 
 	@type("number") speed: number = normalSpeed
+	@type("number") score: number = 10
 }
 
 export class GameRoomState extends Schema {
-	@type({ array: OrbState }) orbs = new ArraySchema<OrbState>()
+	@type({ collection: OrbState }) orbs = new CollectionSchema<OrbState>()
 	@type({ map: PlayerState }) players = new MapSchema<PlayerState>()
 }

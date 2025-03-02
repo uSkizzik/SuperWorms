@@ -1,5 +1,7 @@
 import Phaser from "phaser"
+
 import { Client, getStateCallbacks } from "colyseus.js"
+import { CollectionSchema } from "@colyseus/schema"
 
 import { PlayerController } from "@superworms/server/src/actors/PlayerController"
 import type { GameRoomState, PlayerState } from "@superworms/server/src/schema/GameRoomState.ts"
@@ -14,8 +16,10 @@ export class Game extends Phaser.Scene {
 
 	localPlayer?: Player
 
+	// Map of orb UUIDs to orb actors
+	orbs = new Map<string, Orb>()
 	// Map of sessionIds to player controllers
-	players: Map<string, PlayerController> = new Map<string, PlayerController>()
+	players = new Map<string, PlayerController>()
 
 	constructor() {
 		super("Game")
@@ -46,23 +50,25 @@ export class Game extends Phaser.Scene {
 
 		$(this.room.state).players.onAdd((playerState: PlayerState, sessionId: string) => {
 			// Create player controller and player actor (only if remote) and save it to the PC array
-			if (sessionId !== this.room!.sessionId) {
-				let actor = new Player(this, playerState.x, playerState.y)
-				let controller = new PlayerController(sessionId, playerState, this.room!, actor)
 
-				this.players.set(sessionId, controller)
-			} else {
-				this.players.set(sessionId, new PlayerController(sessionId, playerState, this.room!, this.localPlayer))
-			}
+			let actor = sessionId !== this.room!.sessionId ? new Player(this, playerState.x, playerState.y) : this.localPlayer!
+			let controller = new PlayerController(sessionId, playerState, this.room!, actor)
 
-			this.players.get(sessionId)!.actor!.setDataEnabled()
+			this.players.set(sessionId, controller)
+			actor!.setDataEnabled()
 
 			$(playerState).listen("x", () => this.serverNewPositions(playerState, sessionId))
 			$(playerState).listen("y", () => this.serverNewPositions(playerState, sessionId))
+			$(playerState).listen("score", (value, prev) => actor.updateLength(value, prev))
 		})
 
 		$(this.room!.state).orbs.onAdd((orb) => {
-			new Orb(this, orb.x, orb.y, orb.score, orb.color)
+			this.orbs.set(orb.id, new Orb(this, orb.x, orb.y, orb.score, orb.color))
+		})
+
+		$(this.room!.state).orbs.onRemove((orb) => {
+			this.orbs.get(orb.id)?.destroy()
+			this.orbs.delete(orb.id)
 		})
 	}
 

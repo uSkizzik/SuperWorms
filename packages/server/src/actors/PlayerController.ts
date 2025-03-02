@@ -47,7 +47,10 @@ export class PlayerController extends Actor {
 				normalMagnetRadius
 			)
 
-			if (nearestOrb) console.log(nearestOrb)
+			if (nearestOrb) {
+				this.room.orbSpawner.removeOrb(nearestOrb)
+				this.state.score += nearestOrb.score
+			}
 		}
 	}
 

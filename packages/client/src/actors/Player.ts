@@ -3,6 +3,7 @@ import { Game } from "../scenes/Game"
 
 import { PlayerController } from "@superworms/server/src/actors/PlayerController"
 import type { RotateData } from "@superworms/server/src/messages/RotateData"
+import { normalSpeed } from "@superworms/server/src/util"
 
 export class Player extends Phaser.GameObjects.GameObject {
 	scene: Game
@@ -15,9 +16,9 @@ export class Player extends Phaser.GameObjects.GameObject {
 	playerBody: Phaser.GameObjects.Group
 
 	angle: number = 0
-	speed: number
+	speed: number = normalSpeed
 
-	private refreshTimer: Phaser.Time.TimerEvent
+	score: number = 0
 
 	constructor(scene: Game, x: number, y: number) {
 		super(scene, "player")
@@ -32,16 +33,8 @@ export class Player extends Phaser.GameObjects.GameObject {
 		this.head = this.playerBody.create(x * 16, y * 16, "body")
 		this.head.setOrigin(0.5)
 
-		this.speed = 150
-
 		this.addToUpdateList()
-
-		this.grow()
-		this.grow()
-		this.grow()
-		this.grow()
-		this.grow()
-		this.grow()
+		this.updateLength(10)
 	}
 
 	preUpdate(delta: number) {
@@ -80,8 +73,13 @@ export class Player extends Phaser.GameObjects.GameObject {
 		Phaser.Actions.ShiftPosition(this.playerBody.getChildren(), this.headPos.x, this.headPos.y, 0, new Phaser.Math.Vector2(this.tailPos))
 	}
 
+	updateLength(value) {
+		for (let i = 0; i < value - this.score; i++) {
+			this.grow()
+		}
+	}
+
 	grow() {
-		const newPart = this.playerBody.create(this.tailPos.x, this.tailPos.y, "body")
-		newPart.setOrigin(0.5)
+		this.playerBody.create(this.tailPos.x, this.tailPos.y, "body").setOrigin(0.5)
 	}
 }

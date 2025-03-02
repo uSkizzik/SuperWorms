@@ -10,6 +10,8 @@ export class Orb extends Phaser.GameObjects.GameObject {
 	score: number
 	color: number
 
+	circle: Phaser.GameObjects.GameObject
+
 	constructor(scene: Game, x: number, y: number, score: number, color: number) {
 		super(scene, "orb")
 
@@ -23,7 +25,12 @@ export class Orb extends Phaser.GameObjects.GameObject {
 
 		this.addToUpdateList()
 
-		this.scene.add.circle(this.x, this.y, this.score * 2, this.color)
+		this.circle = this.scene.add.circle(this.x, this.y, this.score * 2, this.color)
+	}
+
+	destroy(fromScene?: boolean) {
+		super.destroy(fromScene)
+		this.circle.destroy()
 	}
 
 	preUpdate() {}
