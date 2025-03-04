@@ -1,8 +1,9 @@
 import Phaser from "phaser"
 import { Game } from "../scenes/Game"
 
-import { PlayerController } from "@superworms/server/src/actors/PlayerController"
+import { PlayerController } from "packages/server/src/controllers/PlayerController"
 import type { RotateData } from "@superworms/server/src/messages/RotateData"
+
 import { normalSpeed } from "@superworms/server/src/util"
 
 export class PlayerActor extends Phaser.GameObjects.GameObject {
@@ -13,7 +14,7 @@ export class PlayerActor extends Phaser.GameObjects.GameObject {
 	tailPos: Phaser.Geom.Point
 
 	head: Phaser.GameObjects.Group
-	playerBody: Phaser.GameObjects.Group
+	bodyParts: Phaser.GameObjects.Group
 
 	angle: number = 0
 	speed: number = normalSpeed
@@ -28,9 +29,9 @@ export class PlayerActor extends Phaser.GameObjects.GameObject {
 		this.headPos = new Phaser.Geom.Point(x, y)
 		this.tailPos = new Phaser.Geom.Point(x, y)
 
-		this.playerBody = scene.add.group()
+		this.bodyParts = scene.add.group()
 
-		this.head = this.playerBody.create(x * 16, y * 16, "body")
+		this.head = this.bodyParts.create(x * 16, y * 16, "body")
 		this.head.setOrigin(0.5)
 
 		this.addToUpdateList()
@@ -56,9 +57,7 @@ export class PlayerActor extends Phaser.GameObjects.GameObject {
 				} as RotateData)
 
 				this.controller?.calculateAngle({ x: ptrX, y: ptrY })
-				this.controller?.calculateMovement()
-
-				Phaser.Actions.ShiftPosition(this.playerBody.getChildren(), this.headPos.x, this.headPos.y, 0, new Phaser.Math.Vector2(this.tailPos))
+				this.tailPos = this.controller?.calculateMovement()
 
 				this.updateRemotePos()
 			} else this.updateRemotePos()
@@ -73,7 +72,7 @@ export class PlayerActor extends Phaser.GameObjects.GameObject {
 		this.headPos.x = Phaser.Math.Linear(this.headPos.x, serverX, 0.2)
 		this.headPos.y = Phaser.Math.Linear(this.headPos.y, serverY, 0.2)
 
-		Phaser.Actions.ShiftPosition(this.playerBody.getChildren(), this.headPos.x, this.headPos.y, 0, new Phaser.Math.Vector2(this.tailPos))
+		this.tailPos = Phaser.Actions.ShiftPosition(this.bodyParts.getChildren(), this.headPos.x, this.headPos.y, 0)
 	}
 
 	updateLength(value) {
@@ -82,13 +81,13 @@ export class PlayerActor extends Phaser.GameObjects.GameObject {
 
 		if (diff > 0) {
 			for (let i = 0; i < diff; i++) {
-				this.playerBody.create(this.tailPos.x, this.tailPos.y, "body").setOrigin(0.5)
+				this.bodyParts.create(this.tailPos.x, this.tailPos.y, "body").setOrigin(0.5)
 			}
 		} else {
-			let bodyParts = this.playerBody.getChildren()
+			let bodyParts = this.bodyParts.getChildren()
 
 			for (let i = 0; i < diff * -1; i++) {
-				this.playerBody.remove(bodyParts[bodyParts.length - i], true, true)
+				this.bodyParts.remove(bodyParts[bodyParts.length - i], true, true)
 			}
 		}
 	}

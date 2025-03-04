@@ -1,13 +1,15 @@
 import { Room, Client } from "@colyseus/core"
 
-import { GameRoomState, PlayerState } from "../schema/GameRoomState"
+import { GameRoomState } from "../states/GameRoomState"
+import { PlayerState } from "../states/PlayerState"
+
 import { RotateData } from "../messages/RotateData"
 
-import { OrbSpawner } from "../actors/OrbSpawner"
-import { PlayerController } from "../actors/PlayerController"
+import { Controller } from "../controllers/Controller"
+import { OrbSpawner } from "../controllers/OrbSpawner"
+import { PlayerController } from "../controllers/PlayerController"
 
 import { tickRate } from "../util"
-import { Controller } from "../actors/Controller"
 
 export class GameRoom extends Room<GameRoomState> {
 	maxClients = 100

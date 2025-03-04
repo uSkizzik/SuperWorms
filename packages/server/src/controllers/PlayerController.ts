@@ -1,8 +1,11 @@
-import { Controller } from "./Controller"
-import { PlayerState } from "../schema/GameRoomState"
-import { GameRoom } from "../rooms/GameRoom"
+import { PlayerActor } from "@superworms/client/src/actors/PlayerActor"
 
-import { PlayerActor } from "../../../client/src/actors/PlayerActor"
+import { Controller } from "./Controller"
+
+import { GameRoom } from "../rooms/GameRoom"
+import { PlayerState } from "../states/PlayerState"
+import { PointState } from "../states/PointState"
+
 import { normalMagnetRadius, normalSpeed, sprintSpeed } from "../util"
 
 /**
@@ -21,6 +24,8 @@ export class PlayerController extends Controller {
 		this.state = state
 		this.room = room
 		this.actor = actor
+
+		this.state.bodyParts.push(this.state.headPos)
 
 		if (this.actor) this.actor.controller = this
 	}
@@ -41,8 +46,8 @@ export class PlayerController extends Controller {
 
 			let nearestOrb = this.room.orbSpawner.findNearest(
 				{
-					x: this.state.x,
-					y: this.state.y
+					x: this.state.headPos.x,
+					y: this.state.headPos.y
 				},
 				normalMagnetRadius
 			)
@@ -84,14 +89,10 @@ export class PlayerController extends Controller {
 	 */
 	calculateAngle(ptr: { x: number; y: number }) {
 		let { x: ptrX = 0, y: ptrY = 0 } = ptr ?? {}
+		let { angle, headPos } = this.actor ?? this.state
 
-		let x = this.actor?.headPos?.x ?? this.state.x
-		let y = this.actor?.headPos?.y ?? this.state.y
-
-		let angle = this.actor?.angle ?? this.state.angle
-
-		let dx = ptrX - x
-		let dy = ptrY - y
+		let dx = ptrX - headPos.x
+		let dy = ptrY - headPos.y
 
 		if (Math.abs(dx) > 1 || Math.abs(dy) > 1) {
 			angle = Math.atan2(dy, dx)
@@ -107,22 +108,41 @@ export class PlayerController extends Controller {
 	/**
 	 * Client and Server
 	 * Calculates movement of the player and sets the variables accordingly depending on the side it's ran
+	 * @return Updated tailPos - MUST manually update on client-side.
 	 */
 	calculateMovement() {
-		let { angle, speed } = this.actor ?? this.state
+		let { angle, speed, headPos, bodyParts } = this.actor ?? this.state
 
-		let x = this.actor?.headPos?.x ?? this.state.x
-		let y = this.actor?.headPos?.y ?? this.state.y
-
-		let newX = x + (speed / 100) * Math.cos(angle)
-		let newY = y + (speed / 100) * Math.sin(angle)
+		let newX = headPos.x + (speed / 100) * Math.cos(angle)
+		let newY = headPos.y + (speed / 100) * Math.sin(angle)
 
 		if (!this.actor) {
-			this.state.x = newX
-			this.state.y = newY
+			this.state.headPos.x = newX
+			this.state.headPos.y = newY
 		} else {
 			this.actor.headPos.x = newX
 			this.actor.headPos.y = newY
 		}
+
+		// if (!this.actor) {
+		// 	this.state.tailPos = new PointState(this.shiftPosition(bodyParts as { x: number; y: number }[], x, y))
+		// 	return this.state.tailPos
+		// } else {
+		// 	return this.shiftPosition(bodyParts as { x: number; y: number }[], x, y)
+		// }
+	}
+
+	private shiftPosition(array: { x: number; y: number }[], x: number, y: number) {
+		if (array[0]) {
+			array[0].x = x
+			array[0].y = y
+		}
+
+		for (let i = 0; i < array.length && array.length > 1; i++) {
+			array[i].x = array[i - 1].x
+			array[i].y = array[i - 1].y
+		}
+
+		return array[array.length]
 	}
 }

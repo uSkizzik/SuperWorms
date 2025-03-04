@@ -2,10 +2,10 @@ import { kdTree } from "kd-tree-javascript"
 
 import { Controller } from "./Controller"
 
-import { OrbState } from "../schema/GameRoomState"
 import { GameRoom } from "../rooms/GameRoom"
 
 import { mapRadius } from "../util"
+import { OrbState } from "../states/OrbState"
 
 /**
  * Shared player logic that runs on both client and server

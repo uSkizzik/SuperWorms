@@ -1,10 +1,12 @@
 import Phaser from "phaser"
 
 import { Client, getStateCallbacks } from "colyseus.js"
-import { CollectionSchema } from "@colyseus/schema"
 
-import { PlayerController } from "@superworms/server/src/actors/PlayerController"
-import type { GameRoomState, PlayerState } from "@superworms/server/src/schema/GameRoomState.ts"
+import { PlayerController } from "@superworms/server/src/controllers/PlayerController.ts"
+
+import type { GameRoomState } from "@superworms/server/src/states/GameRoomState.ts"
+import type { PlayerState } from "@superworms/server/src/states/PlayerState.ts"
+
 import type { GameRoom } from "@superworms/server/src/rooms/GameRoom.ts"
 
 import { PlayerActor } from "../actors/PlayerActor"
@@ -78,7 +80,7 @@ export class Game extends Phaser.Scene {
 
 		if (!this.room) throw "Missing local room"
 
-		controller.actor!.setData("serverX", playerState.x)
-		controller.actor!.setData("serverY", playerState.y)
+		controller.actor!.setData("serverX", playerState.headPos.x)
+		controller.actor!.setData("serverY", playerState.headPos.y)
 	}
 }
