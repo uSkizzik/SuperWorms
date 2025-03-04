@@ -53,15 +53,15 @@ export class Game extends Phaser.Scene {
 		$(this.room.state).players.onAdd((playerState: PlayerState, sessionId: string) => {
 			// Create player controller and player actor (only if remote) and save it to the PC array
 
-			let actor = sessionId !== this.room!.sessionId ? new PlayerActor(this, playerState.x, playerState.y) : this.localPlayer!
+			let actor = sessionId !== this.room!.sessionId ? new PlayerActor(this, playerState.headPos.x, playerState.headPos.y) : this.localPlayer!
 			let controller = new PlayerController(sessionId, playerState, this.room!, actor)
 
 			this.players.set(sessionId, controller)
 			actor!.setDataEnabled()
 
-			$(playerState).listen("x", () => this.serverNewPositions(playerState, sessionId))
-			$(playerState).listen("y", () => this.serverNewPositions(playerState, sessionId))
-			$(playerState).listen("score", (value, prev) => actor.updateLength(value, prev))
+			$(playerState.headPos).listen("x", () => this.serverNewPositions(playerState, sessionId))
+			$(playerState.headPos).listen("y", () => this.serverNewPositions(playerState, sessionId))
+			$(playerState).listen("score", (value) => actor.updateLength(value))
 		})
 
 		$(this.room!.state).orbs.onAdd((orb) => {

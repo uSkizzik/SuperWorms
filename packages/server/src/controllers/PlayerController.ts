@@ -4,7 +4,6 @@ import { Controller } from "./Controller"
 
 import { GameRoom } from "../rooms/GameRoom"
 import { PlayerState } from "../states/PlayerState"
-import { PointState } from "../states/PointState"
 
 import { normalMagnetRadius, normalSpeed, sprintSpeed } from "../util"
 
@@ -54,10 +53,10 @@ export class PlayerController extends Controller {
 
 			if (nearestOrb) {
 				this.room.orbSpawner.removeOrb(nearestOrb)
-				this.state.score += nearestOrb.score
+				this.serverUpdateLength(nearestOrb.score)
 			}
 
-			if (this.state.isSprinting) this.state.score -= 1
+			if (this.state.isSprinting) this.serverUpdateLength(-1)
 			if (this.state.score <= 10) this.stopSprint()
 		}
 	}
@@ -83,12 +82,32 @@ export class PlayerController extends Controller {
 	}
 
 	/**
+	 * Server-side Only
+	 * @param diff The difference between the old and new value. Giving 5 would add 5, -5 would remove 5
+	 */
+	serverUpdateLength(diff: number) {
+		if (this.isServer()) {
+			let { score, bodyParts, tailPos } = this.state
+
+			this.state.score = score + diff
+
+			if (diff > 0) {
+				for (let i = 0; i < diff; i++) {
+					bodyParts.push(tailPos)
+				}
+			} else {
+				bodyParts.splice(bodyParts.length - diff * -1, diff * -1)
+			}
+		} else throw "This method can run only on the server!"
+	}
+
+	/**
 	 * Client and Server
 	 * Calculates angle of movement of a player and sets the variables accordingly depending on the side it's ran
 	 * @param ptr World X and Y coords of the player's pointer
 	 */
 	calculateAngle(ptr: { x: number; y: number }) {
-		let { x: ptrX = 0, y: ptrY = 0 } = ptr ?? {}
+		let { x: ptrX = 0, y: ptrY = 0 } = ptr
 		let { angle, headPos } = this.actor ?? this.state
 
 		let dx = ptrX - headPos.x
@@ -107,11 +126,13 @@ export class PlayerController extends Controller {
 
 	/**
 	 * Client and Server
-	 * Calculates movement of the player and sets the variables accordingly depending on the side it's ran
-	 * @return Updated tailPos - MUST manually update on client-side.
+	 * Calculates movement of the player and sets the X and Y accordingly depending on the side it's ran
+	 *
+	 * **Tail position is updated only on the server-side, client-side player actors must manually update it**
 	 */
 	calculateMovement() {
-		let { angle, speed, headPos, bodyParts } = this.actor ?? this.state
+		let { angle, headPos } = this.actor ?? this.state
+		let { speed } = this.state
 
 		let newX = headPos.x + (speed / 100) * Math.cos(angle)
 		let newY = headPos.y + (speed / 100) * Math.sin(angle)
@@ -124,12 +145,12 @@ export class PlayerController extends Controller {
 			this.actor.headPos.y = newY
 		}
 
-		// if (!this.actor) {
-		// 	this.state.tailPos = new PointState(this.shiftPosition(bodyParts as { x: number; y: number }[], x, y))
-		// 	return this.state.tailPos
-		// } else {
-		// 	return this.shiftPosition(bodyParts as { x: number; y: number }[], x, y)
-		// }
+		if (!this.actor) {
+			let newTail = this.shiftPosition(this.state.bodyParts, headPos.x, headPos.y)
+
+			this.state.tailPos.x = newTail.x
+			this.state.tailPos.y = newTail.y
+		}
 	}
 
 	private shiftPosition(array: { x: number; y: number }[], x: number, y: number) {
@@ -138,11 +159,11 @@ export class PlayerController extends Controller {
 			array[0].y = y
 		}
 
-		for (let i = 0; i < array.length && array.length > 1; i++) {
+		for (let i = 1; i < array.length; i++) {
 			array[i].x = array[i - 1].x
 			array[i].y = array[i - 1].y
 		}
 
-		return array[array.length]
+		return array[array.length - 1]
 	}
 }
