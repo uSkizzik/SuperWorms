@@ -3,9 +3,9 @@ import { kdTree } from "kd-tree-javascript"
 import { Controller } from "./Controller"
 
 import { GameRoom } from "../rooms/GameRoom"
-
-import { mapRadius } from "../util"
 import { OrbState } from "../states/OrbState"
+
+import { mapRadius, maxOrbSpawnScore, minOrbSpawnScore } from "../util"
 
 /**
  * Shared player logic that runs on both client and server
@@ -13,7 +13,7 @@ import { OrbState } from "../states/OrbState"
 export class OrbSpawner extends Controller {
 	room: GameRoom
 
-	private tree: kdTree<OrbState> = new kdTree([], this.treeDistance, ["x", "y"])
+	private tree: kdTree<OrbState> = new kdTree<OrbState>([], this.treeDistance, ["x", "y"])
 
 	constructor(room: GameRoom) {
 		super()
@@ -31,7 +31,7 @@ export class OrbSpawner extends Controller {
 			orb.x = Math.floor(Math.random() * (mapRadius - -mapRadius) + -mapRadius)
 			orb.y = Math.floor(Math.random() * (mapRadius - -mapRadius) + -mapRadius)
 			orb.color = (Math.random() * 0xffffff) << 0
-			orb.score = Math.floor(Math.random() * (5 - 1) + 1)
+			orb.score = Math.floor(Math.random() * (maxOrbSpawnScore - minOrbSpawnScore) + 1)
 
 			this.spawnOrb(orb)
 		}

@@ -39,7 +39,7 @@ export class PlayerActor extends Phaser.GameObjects.GameObject {
 
 	preUpdate(delta: number) {
 		if (this.controller) {
-			if (this.scene!.room.sessionId === this.controller.sessionId) this.updateLocalPos()
+			if (this.scene!.room!.sessionId === this.controller.sessionId) this.updateLocalPos()
 			else this.updateRemotePos()
 		}
 	}
@@ -73,7 +73,8 @@ export class PlayerActor extends Phaser.GameObjects.GameObject {
 		this.headPos.x = Phaser.Math.Linear(this.headPos.x, serverX, 0.2)
 		this.headPos.y = Phaser.Math.Linear(this.headPos.y, serverY, 0.2)
 
-		this.tailPos = Phaser.Actions.ShiftPosition(this.bodyParts.getChildren(), this.headPos.x, this.headPos.y, 1)
+		let tailVec = Phaser.Actions.ShiftPosition(this.bodyParts.getChildren(), this.headPos.x, this.headPos.y, 1)
+		this.tailPos.setTo(tailVec.x, tailVec.y)
 	}
 
 	updateLength() {
