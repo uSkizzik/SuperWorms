@@ -1,6 +1,8 @@
 export const minOrbSpawnScore = 1
 export const maxOrbSpawnScore = 5
 
+export const playerBurnScore = 1
+
 export const normalMagnetRadius = 20
 
 export const normalSpeed = 350

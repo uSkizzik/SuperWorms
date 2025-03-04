@@ -5,7 +5,7 @@ import { Controller } from "./Controller"
 import { GameRoom } from "../rooms/GameRoom"
 import { PlayerState } from "../states/PlayerState"
 
-import { normalMagnetRadius, normalSpeed, sprintSpeed } from "../util"
+import { normalMagnetRadius, normalSpeed, playerBurnScore, sprintSpeed } from "../util"
 
 /**
  * Shared player logic that runs on both client and server
@@ -56,8 +56,8 @@ export class PlayerController extends Controller {
 				this.serverUpdateLength(nearestOrb.score)
 			}
 
-			if (this.state.isSprinting) this.serverUpdateLength(-1)
 			if (this.state.score <= 10) this.stopSprint()
+			if (this.state.isSprinting) this.serverUpdateLength(playerBurnScore * -1)
 		}
 	}
 
