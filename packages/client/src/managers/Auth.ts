@@ -1,16 +1,18 @@
 import { colyseus } from "./Colyseus.ts"
 import { DISCORD_CLIENT_ID, discord } from "./Discord.ts"
 
-export async function authenticate() {
+export async function authenticate(setStatus: (val: string) => void) {
 	if (!discord) {
 		console.log("Discord instance does not exist. Continuing in web mode.")
 		return
 	}
 
 	console.log("Connecting to Discord...")
+	setStatus("Connecting to Discord...")
 	await discord.ready()
 
 	console.log("Connected to Discord, authorizing...")
+	setStatus("Authorizing...")
 
 	// Authorize with Discord Client
 	const { code } = await discord.commands.authorize({
@@ -45,6 +47,7 @@ export async function authenticate() {
 
 	// Retrieve a token and userdata from the embedded app's server
 	console.log("Authorized, exchanging code for token...")
+	setStatus("Exchanging code...")
 	const { data } = await colyseus.http.post("/discord_token", {
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({ code })
@@ -57,7 +60,10 @@ export async function authenticate() {
 	// Authenticate with the token, so we can use the Discord API
 	// This is required to listen to SPEAKING events
 	console.log("Code exchanged, authenticating...")
+	setStatus("Authenticating...")
 	await discord.commands.authenticate({ access_token: data.access_token })
+
+	setStatus("Loading...")
 
 	return data
 }

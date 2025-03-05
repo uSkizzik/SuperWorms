@@ -5,14 +5,10 @@ import type { LobbyRoomState } from "@superworms/server/src/states/LobbyRoomStat
 
 import { colyseus } from "../managers/Colyseus.ts"
 import { discord, isEmbedded } from "../managers/Discord.ts"
+import Tips from "../components/Tips.tsx"
 
-function Home({ token, setPage, setUsername }: { token: string | null; setPage: (val: "home" | "game") => void; setUsername: (val: string) => void }) {
+function Home({ status, setStatus, token, setPage, setUsername }: { status: string; setStatus: (val: string) => void; token: string | null; setPage: (val: "home" | "game") => void; setUsername: (val: string) => void }) {
 	const [room, setRoom] = useState<Room>()
-
-	const subtitles = ["Eat to grow longer", "Don't run into other players", "When longer hold the mouse to become faster", "Use the power-ups to your advantage", "Become the biggest"]
-
-	const [currSubtitle, setCurrSubtitle] = useState(subtitles.length - 1)
-	const [subtitleVisible, setSubtitleVisible] = useState(false)
 
 	const startGame = () => {
 		room?.leave()
@@ -21,24 +17,13 @@ function Home({ token, setPage, setUsername }: { token: string | null; setPage: 
 
 	useEffect(() => {
 		if (!token) return
-		colyseus.joinOrCreate<LobbyRoomState>("lobby_room", { channelId: discord.channelId }).then((room) => setRoom(room))
+
+		setStatus("Joining room...")
+		colyseus.joinOrCreate<LobbyRoomState>("lobby_room", { channelId: discord.channelId }).then((room) => {
+			setRoom(room)
+			setStatus("Loading...")
+		})
 	}, [token])
-
-	useEffect(() => {
-		if (isEmbedded && !colyseus.auth.token) return
-
-		const timeout = setTimeout(() => {
-			setSubtitleVisible(!subtitleVisible)
-
-			if (!subtitleVisible) {
-				let newSub = currSubtitle + 1
-				if (newSub > subtitles.length - 1) newSub = 0
-
-				setCurrSubtitle(newSub)
-			}
-		}, 1500)
-		return () => clearTimeout(timeout)
-	}, [subtitleVisible, colyseus.auth.token])
 
 	return (
 		<div className="tw:min-h-screen tw:p-4 tw:flex tw:items-center tw:flex-col">
@@ -60,9 +45,7 @@ function Home({ token, setPage, setUsername }: { token: string | null; setPage: 
 
 					<div className="tw:flex-grow tw:flex tw:items-center tw:flex-col">
 						<img className="tw:w-lg" src="/superworms.png" alt="Superworms" />
-						<span className="tw:font-semibold tw:duration-1300" style={{ opacity: subtitleVisible ? 1 : 0 }}>
-							{subtitles[currSubtitle]}
-						</span>
+						<Tips />
 						{isEmbedded ? <span className="tw:mt-4 tw:opacity-50">Logged in as {room!.state.users?.get(room!.sessionId)?.username}</span> : <input className="tw:shadow-lg tw:mt-6 tw:bg-amber-900 tw:px-5 tw:py-3 tw:rounded-full tw:focus:bg-red-900 tw:focus:outline-none" placeholder="enter a nickname" onChange={(e) => setUsername(e.target.value)} />}
 						<button className="tw:text-lg tw:font-bold tw:shadow-lg tw:mt-4 tw:bg-amber-700 tw:px-8 tw:py-2 tw:cursor-pointer tw:rounded-full tw:hover:bg-red-900" onClick={() => startGame()}>
 							Play
@@ -76,7 +59,16 @@ function Home({ token, setPage, setUsername }: { token: string | null; setPage: 
 					</div>
 				</>
 			) : (
-				<></>
+				<div className="tw:flex-grow tw:flex tw:items-center tw:justify-center tw:flex-col">
+					<div role="status">
+						<svg className="tw:size-12 tw:animate-[spin_1s_linear_infinite] tw:text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+							<circle className="tw:opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+							<path className="tw:opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+						</svg>
+						<span className="tw:sr-only">Loading...</span>
+					</div>
+					<span className="tw:mt-6 tw:text-lg tw:opacity-75 tw:font-semibold">{status}</span>
+				</div>
 			)}
 		</div>
 	)
