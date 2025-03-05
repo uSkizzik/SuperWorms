@@ -2,8 +2,8 @@
 	"compilerOptions": {
 		/* Basic Options */
 		"target": "esnext",
-		"module": "commonjs",
-		"lib": ["es5", "es6", "ES2021.String"],
+		"module": "esnext",
+		"lib": ["es5", "es6", "ES2021.String", "DOM", "DOM.Iterable"],
 		"allowJs": false,
 		"checkJs": false,
 		"declaration": true,

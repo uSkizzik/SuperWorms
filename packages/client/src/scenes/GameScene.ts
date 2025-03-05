@@ -1,6 +1,5 @@
 import Phaser from "phaser"
-
-import { Client, getStateCallbacks } from "colyseus.js"
+import { getStateCallbacks } from "colyseus.js"
 
 import { PlayerController } from "@superworms/server/src/controllers/PlayerController.ts"
 
@@ -12,10 +11,11 @@ import type { GameRoom } from "@superworms/server/src/rooms/GameRoom.ts"
 import { PlayerActor } from "../actors/PlayerActor"
 import { OrbActor } from "../actors/OrbActor"
 
-export class GameScene extends Phaser.Scene {
-	gameClient: Client
-	room?: GameRoom
+import { colyseus } from "../managers/Colyseus.ts"
+import { isEmbedded } from "../managers/Discord.ts"
 
+export class GameScene extends Phaser.Scene {
+	room?: GameRoom
 	localPlayer?: PlayerActor
 
 	// Map of orb UUIDs to orb actors
@@ -25,12 +25,11 @@ export class GameScene extends Phaser.Scene {
 
 	constructor() {
 		super("GameScene")
-
-		this.gameClient = new Client("http://localhost:2567")
 	}
 
 	preload() {
-		this.load.image("bg", "assets/bg.jpg")
+		this.load.setPath((isEmbedded ? ".proxy/" : "") + "assets/")
+		this.load.image("bg", "bg.jpg")
 	}
 
 	async create() {
@@ -40,14 +39,12 @@ export class GameScene extends Phaser.Scene {
 		this.localPlayer = new PlayerActor(this, 0, 0)
 		this.add.existing(this.localPlayer)
 
-		this.add.existing(new OrbActor(this, 500, 500, 1, 0x00ff00))
-
 		// Setup and focus camera on local player actor
 		this.cameras.main.zoomTo(1.5, 0.01)
 		this.cameras.main.startFollow(this.localPlayer.headPos)
 
 		// Create and setup room
-		this.room = await this.gameClient.joinOrCreate<GameRoomState>("game_room")
+		this.room = await colyseus.joinOrCreate<GameRoomState>("game_room")
 		const $ = getStateCallbacks(this.room)
 
 		$(this.room.state).players.onAdd((playerState: PlayerState, sessionId: string) => {

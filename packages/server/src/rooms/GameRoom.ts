@@ -1,3 +1,4 @@
+import { JWT } from "@colyseus/auth"
 import { Room, Client } from "@colyseus/core"
 
 import { GameRoomState } from "../states/GameRoomState"
@@ -17,6 +18,10 @@ export class GameRoom extends Room<GameRoomState> {
 
 	orbSpawner = new OrbSpawner(this)
 	private serverControllers = new Map<string, PlayerController>()
+
+	static async onAuth(token: string) {
+		return token ? await JWT.verify(token) : {}
+	}
 
 	onCreate(_options: any) {
 		console.log("room", this.roomId, "created...")
@@ -46,7 +51,7 @@ export class GameRoom extends Room<GameRoomState> {
 		})
 	}
 
-	private tick(deltaTime: number) {
+	private tick() {
 		for (const actor of Controller.controllers) {
 			actor.tick()
 		}
@@ -56,6 +61,7 @@ export class GameRoom extends Room<GameRoomState> {
 		console.log(client.sessionId, "joined")
 
 		let state = new PlayerState()
+		state.username = client.auth?.username
 
 		this.state.players.set(client.sessionId, state)
 		this.serverControllers.set(client.sessionId, new PlayerController(client.sessionId, state, this))

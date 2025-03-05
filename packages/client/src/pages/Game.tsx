@@ -27,6 +27,8 @@ function Game({ username }: { username: string }) {
 				limit: fpsLimit
 			}
 		})
+
+		game.registry.set("username", username)
 	}, [])
 
 	return <></>

@@ -4,6 +4,8 @@ import { PointState } from "./PointState"
 import { normalSpeed } from "../util"
 
 export class PlayerState extends Schema {
+	@type("string") username: string = ""
+
 	@type("number") angle: number = 0
 
 	@type(PointState) headPos: PointState = new PointState()

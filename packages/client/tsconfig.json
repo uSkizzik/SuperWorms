@@ -7,8 +7,6 @@
 		"skipLibCheck": true,
 		"useDefineForClassFields": false,
 
-		"lib": ["ES2020", "DOM", "DOM.Iterable"],
-
 		"moduleResolution": "bundler",
 		"isolatedModules": true,
 		"moduleDetection": "force",
