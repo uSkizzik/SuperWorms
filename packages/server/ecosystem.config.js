@@ -10,7 +10,7 @@ module.exports = {
 	apps: [
 		{
 			name: "colyseus-app",
-			script: "build/index.ts",
+			script: "build/index.tsx",
 			time: true,
 			watch: false,
 			instances: os.cpus().length,

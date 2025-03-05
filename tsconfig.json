@@ -45,6 +45,7 @@
 		/* Module Options */
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
+		"allowImportingTsExtensions": true,
 
 		/* Type Checking */
 		// "isolatedModules": true,

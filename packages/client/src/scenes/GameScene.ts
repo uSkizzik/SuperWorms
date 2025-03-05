@@ -12,7 +12,7 @@ import type { GameRoom } from "@superworms/server/src/rooms/GameRoom.ts"
 import { PlayerActor } from "../actors/PlayerActor"
 import { OrbActor } from "../actors/OrbActor"
 
-export class Game extends Phaser.Scene {
+export class GameScene extends Phaser.Scene {
 	gameClient: Client
 	room?: GameRoom
 
@@ -24,7 +24,7 @@ export class Game extends Phaser.Scene {
 	players = new Map<string, PlayerController>()
 
 	constructor() {
-		super("Game")
+		super("GameScene")
 
 		this.gameClient = new Client("http://localhost:2567")
 	}
@@ -34,7 +34,7 @@ export class Game extends Phaser.Scene {
 	}
 
 	async create() {
-		this.background = this.add.tileSprite(0, 0, 10_000, 10_000, "bg")
+		this.add.tileSprite(0, 0, 10_000, 10_000, "bg")
 
 		// Spawn local player actor
 		this.localPlayer = new PlayerActor(this, 0, 0)

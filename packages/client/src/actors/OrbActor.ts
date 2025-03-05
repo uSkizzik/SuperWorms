@@ -1,8 +1,8 @@
 import Phaser from "phaser"
-import { Game } from "../scenes/Game"
+import { GameScene } from "../scenes/GameScene.ts"
 
 export class OrbActor extends Phaser.GameObjects.GameObject {
-	scene: Game
+	scene: GameScene
 
 	x: number
 	y: number
@@ -12,7 +12,7 @@ export class OrbActor extends Phaser.GameObjects.GameObject {
 
 	circle: Phaser.GameObjects.GameObject
 
-	constructor(scene: Game, x: number, y: number, score: number, color: number) {
+	constructor(scene: GameScene, x: number, y: number, score: number, color: number) {
 		super(scene, "orb")
 
 		this.scene = scene

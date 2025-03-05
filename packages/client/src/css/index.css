@@ -1,0 +1,52 @@
+@import "tailwindcss" prefix(tw);
+
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@theme {
+	--color-firey-yellow: #f7b23b;
+	--color-lava-red: #ff0000;
+}
+
+* {
+	user-select: none;
+}
+
+body {
+	color: #ddd;
+	background: radial-gradient(circle, rgba(111, 64, 0, 1) 25%, rgba(45, 0, 0, 1) 100%);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	color: #ddd;
+	font-weight: 600;
+}
+
+@layer base {
+	h1 {
+		font-size: var(--text-2xl);
+	}
+
+	h2 {
+		font-size: var(--text-xl);
+	}
+
+	h3 {
+		font-size: var(--text-lg);
+	}
+
+	a {
+		color: var(--tw-color-firey-yellow);
+	}
+
+	a:hover {
+		color: #ffc43c;
+	}
+}

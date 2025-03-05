@@ -1,11 +1,11 @@
 import Phaser from "phaser"
-import { Game } from "../scenes/Game"
+import { GameScene } from "../scenes/GameScene.ts"
 
 import { PlayerController } from "@superworms/server/src/controllers/PlayerController"
 import type { RotateData } from "@superworms/server/src/messages/RotateData"
 
 export class PlayerActor extends Phaser.GameObjects.GameObject {
-	scene: Game
+	scene: GameScene
 	controller?: PlayerController
 
 	headPos: Phaser.Geom.Point
@@ -18,7 +18,7 @@ export class PlayerActor extends Phaser.GameObjects.GameObject {
 
 	score: number = 0
 
-	constructor(scene: Game, x: number, y: number) {
+	constructor(scene: GameScene, x: number, y: number) {
 		super(scene, "player")
 
 		this.scene = scene
