@@ -16,7 +16,8 @@ import { mapRadius, maxOrbSpawnScore, minOrbSpawnScore, powerupChance } from "..
 export class OrbSpawner extends Controller {
 	room: GameRoom
 
-	private tree: kdTree<OrbState> = new kdTree<OrbState>([], this.treeDistance, ["x", "y"])
+	private orbTree: kdTree<OrbState> = new kdTree<OrbState>([], this.treeDistance, ["x", "y"])
+	private powerUpTree: kdTree<OrbState> = new kdTree<OrbState>([], this.treeDistance, ["x", "y"])
 
 	constructor(room: GameRoom) {
 		super()
@@ -39,7 +40,7 @@ export class OrbSpawner extends Controller {
 
 			// Power-ups give 10 score
 			orb.score = !isPowerup ? randomInt(minOrbSpawnScore, maxOrbSpawnScore) : 10
-			orb.statusEffect = isPowerup ? 1 : 0 // randomInt(1, Object.keys(EStatusEffect).length - 1)
+			orb.statusEffect = isPowerup ? 2 : 0 // randomInt(1, Object.keys(EStatusEffect).length - 1)
 
 			this.spawnOrb(orb)
 		}
@@ -48,31 +49,60 @@ export class OrbSpawner extends Controller {
 	spawnOrb(orb: OrbState) {
 		this.room.state.orbs.add(orb)
 		// TODO: Do not rebuild tree on spawn, instead rebuild periodically
-		this.rebuildTree()
+		this.rebuildTrees()
 	}
 
 	removeOrb(orb: OrbState) {
 		this.room.state.orbs.delete(orb)
-		this.rebuildTree()
+		this.rebuildTrees()
 	}
 
 	/**
 	 * Find the nearest orb at a specific point
-	 * @param orb
-	 * @param range
+	 * @param point Point to search around for orbs
+	 * @param range Radius from the point to search
+	 * @param noPowerUps Ignore power-ups and return orbs only
 	 */
-	findNearest(orb: { x: number; y: number }, range: number): OrbState | null {
-		if (!this.tree) return null
+	findNearest(point: { x: number; y: number }, range: number, noPowerUps: boolean = false): OrbState | null {
+		if (!this.orbTree) return null
 
-		const nearest = this.tree.nearest(orb as OrbState, 1, range)
-		return nearest.length > 0 ? nearest[0][0] : null
+		const nearestOrb = this.orbTree.nearest(point as OrbState, 1, range)
+		// if (noPowerUps)
+		return nearestOrb.length > 0 ? nearestOrb[0][0] : null
+
+		// const nearestPowerUp = this.powerUpTree.nearest(point as OrbState, 1, range)
+		//
+		// // Extract the closest points (if they exist)
+		// const validPoint = nearestOrb.length > 0 ? nearestOrb[0] : null
+		// const filteredPoint = nearestPowerUp.length > 0 ? nearestPowerUp[0] : null
+		//
+		// // If only one point exists, return it
+		// if (!validPoint) return filteredPoint ? filteredPoint[0] : null
+		// if (!filteredPoint) return validPoint ? validPoint[0] : null
+		//
+		// // Both points exist, compare distances
+		// const validDistance = validPoint[1] // Second element is the distance
+		// const filteredDistance = filteredPoint[1]
+		//
+		// return validDistance <= filteredDistance ? validPoint[0] : filteredPoint[0]
 	}
 
 	private treeDistance(a: { x: number; y: number }, b: { x: number; y: number }): number {
 		return Math.sqrt((a.x - b?.x) ** 2 + (a.y - b?.y) ** 2)
 	}
 
-	private rebuildTree() {
-		this.tree = new kdTree<OrbState>(this.room.state.orbs.toArray(), this.treeDistance, ["x", "y"])
+	private rebuildTrees() {
+		this.orbTree = new kdTree<OrbState>(
+			this.room.state.orbs.toArray(),
+			// .filter((o) => o.statusEffect === 0)
+			this.treeDistance,
+			["x", "y"]
+		)
+
+		// this.powerUpTree = new kdTree<OrbState>(
+		// 	this.room.state.orbs.toArray().filter((o) => o.statusEffect > 0),
+		// 	this.treeDistance,
+		// 	["x", "y"]
+		// )
 	}
 }

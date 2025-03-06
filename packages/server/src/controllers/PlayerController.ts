@@ -10,7 +10,7 @@ import { PlayerState } from "../states/PlayerState"
 import { EStatusEffect } from "../effects/EStatusEffect.ts"
 import { StatusEffect } from "../effects/StatusEffect.ts"
 
-import { normalMagnetRadius, normalSpeed, playerBurnScore, sprintSpeed, statusEffects } from "../util"
+import { normalPickupRadius, normalSpeed, playerBurnScore, sprintSpeed, statusEffects } from "../util"
 
 /**
  * Shared player logic that runs on both client and server
@@ -67,7 +67,8 @@ export class PlayerController extends Controller {
 					x: this.state.headPos.x,
 					y: this.state.headPos.y
 				},
-				normalMagnetRadius
+				normalPickupRadius,
+				this.state.statusEffects.size >= 1
 			)
 
 			if (nearestOrb) {

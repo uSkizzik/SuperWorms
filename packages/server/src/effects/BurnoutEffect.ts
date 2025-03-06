@@ -8,7 +8,7 @@ import { burnoutSpeed, normalSpeed } from "../util"
 
 export class BurnoutEffect extends StatusEffect {
 	constructor(room: GameRoom, controller: PlayerController) {
-		super(room, controller, EStatusEffect.BURNOUT, 0xfa0, 15)
+		super(room, controller, EStatusEffect.BURNOUT, 0xfa0, 10)
 	}
 
 	apply() {

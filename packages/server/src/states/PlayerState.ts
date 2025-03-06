@@ -4,7 +4,7 @@ import { EStatusEffect } from "../effects/EStatusEffect.ts"
 
 import { PointState } from "./PointState"
 
-import { normalSpeed } from "../util"
+import { normalPickupRadius, normalSpeed } from "../util"
 
 export class PlayerState extends Schema {
 	@type("string") username: string = ""
@@ -15,7 +15,10 @@ export class PlayerState extends Schema {
 	@type(PointState) tailPos: PointState = new PointState()
 	@type([PointState]) bodyParts: PointState[] = []
 
-	@type("boolean") isSprintEnabled: boolean = true
+	@type("number") pickupRadius: number = normalPickupRadius
+
+	@type("boolean")
+	isSprintEnabled: boolean = true
 	@type("boolean") isSprinting: boolean = false
 	@type("number") speed: number = normalSpeed
 
