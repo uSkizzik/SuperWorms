@@ -1,3 +1,5 @@
+import { getStateCallbacks } from "colyseus.js"
+
 import { PlayerActor } from "@superworms/client/src/actors/PlayerActor"
 
 import { Controller } from "./Controller"
@@ -5,16 +7,23 @@ import { Controller } from "./Controller"
 import { GameRoom } from "../rooms/GameRoom"
 import { PlayerState } from "../states/PlayerState"
 
-import { normalMagnetRadius, normalSpeed, playerBurnScore, sprintSpeed } from "../util"
+import { EStatusEffect } from "../effects/EStatusEffect.ts"
+import { StatusEffect } from "../effects/StatusEffect.ts"
+
+import { normalMagnetRadius, normalSpeed, playerBurnScore, sprintSpeed, statusEffects } from "../util"
 
 /**
  * Shared player logic that runs on both client and server
  */
 export class PlayerController extends Controller {
 	sessionId: string
+
 	state: PlayerState
 	room: GameRoom
+
 	actor?: PlayerActor
+
+	effectHandlers: StatusEffect[] = []
 
 	constructor(sessionId: string, state: PlayerState, room: GameRoom, actor?: PlayerActor) {
 		super()
@@ -26,7 +35,14 @@ export class PlayerController extends Controller {
 
 		this.state.bodyParts.push(this.state.headPos)
 
-		if (this.actor) this.actor.controller = this
+		if (this.actor) {
+			this.actor.controller = this
+
+			const $ = getStateCallbacks(room)
+
+			$(state).statusEffects.onAdd((effect) => this.statusEffectAdded(effect))
+			$(state).statusEffects.onRemove((effect) => this.statusEffectRemoved(effect))
+		}
 	}
 
 	/**
@@ -43,6 +59,9 @@ export class PlayerController extends Controller {
 		if (this.isServer()) {
 			this.calculateMovement()
 
+			// Make sure we don't have a NONE status effect
+			this.state.statusEffects.delete(EStatusEffect.NONE)
+
 			let nearestOrb = this.room.orbSpawner.findNearest(
 				{
 					x: this.state.headPos.x,
@@ -52,8 +71,15 @@ export class PlayerController extends Controller {
 			)
 
 			if (nearestOrb) {
+				if (nearestOrb.statusEffect && this.state.statusEffects.size >= 1) return
+
 				this.room.orbSpawner.removeOrb(nearestOrb)
 				this.serverUpdateLength(nearestOrb.score)
+
+				if (nearestOrb.statusEffect) {
+					this.state.statusEffects.add(nearestOrb.statusEffect)
+					this.statusEffectAdded(nearestOrb.statusEffect)
+				}
 			}
 
 			if (this.state.score <= 10) this.stopSprint()
@@ -67,6 +93,8 @@ export class PlayerController extends Controller {
 			return
 		}
 
+		if (!this.state.isSprintEnabled) return
+
 		this.state.isSprinting = true
 		this.state.speed = sprintSpeed
 	}
@@ -77,8 +105,21 @@ export class PlayerController extends Controller {
 			return
 		}
 
+		if (!this.state.isSprintEnabled) return
+
 		this.state.isSprinting = false
 		this.state.speed = normalSpeed
+	}
+
+	statusEffectAdded(effect: EStatusEffect) {
+		this.effectHandlers.push(new statusEffects[effect](this.room, this))
+	}
+
+	statusEffectRemoved(effect: EStatusEffect) {
+		const handlerIndex = this.effectHandlers.findIndex((val) => val.effect === effect)
+		const handler = this.effectHandlers.splice(handlerIndex, 1)[0]
+
+		handler.destroy()
 	}
 
 	/**

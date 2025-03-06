@@ -1,36 +1,30 @@
 import Phaser from "phaser"
+
+import type { OrbState } from "@superworms/server/src/states/OrbState.ts"
+
 import { GameScene } from "../scenes/GameScene.ts"
 
 export class OrbActor extends Phaser.GameObjects.GameObject {
 	scene: GameScene
+	orbState: OrbState
 
-	x: number
-	y: number
+	shape: Phaser.GameObjects.GameObject
 
-	score: number
-	color: number
-
-	circle: Phaser.GameObjects.GameObject
-
-	constructor(scene: GameScene, x: number, y: number, score: number, color: number) {
+	constructor(scene: GameScene, state: OrbState) {
 		super(scene, "orb")
 
 		this.scene = scene
-
-		this.x = x
-		this.y = y
-
-		this.score = score
-		this.color = color
+		this.orbState = state
 
 		this.addToUpdateList()
 
-		this.circle = this.scene.add.circle(this.x, this.y, this.score * 2, this.color)
+		if (this.orbState.statusEffect) this.shape = this.scene.add.rectangle(this.orbState.x, this.orbState.y, this.orbState.score * 2, this.orbState.score * 2, this.orbState.color)
+		else this.shape = this.scene.add.circle(this.orbState.x, this.orbState.y, this.orbState.score * 2, this.orbState.color)
 	}
 
 	destroy(fromScene?: boolean) {
 		super.destroy(fromScene)
-		this.circle.destroy()
+		this.shape.destroy()
 	}
 
 	preUpdate() {}

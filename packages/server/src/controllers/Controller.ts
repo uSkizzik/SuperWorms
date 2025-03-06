@@ -6,7 +6,7 @@ export abstract class Controller {
 	}
 
 	destroy() {
-		Controller.controllers = Controller.controllers.filter((a: Controller) => a === this)
+		Controller.controllers = Controller.controllers.filter((a: Controller) => a !== this)
 	}
 
 	/**

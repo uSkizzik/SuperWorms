@@ -1,3 +1,4 @@
+import { randomInt } from "crypto"
 import { kdTree } from "kd-tree-javascript"
 
 import { Controller } from "./Controller"
@@ -5,7 +6,9 @@ import { Controller } from "./Controller"
 import { GameRoom } from "../rooms/GameRoom"
 import { OrbState } from "../states/OrbState"
 
-import { mapRadius, maxOrbSpawnScore, minOrbSpawnScore } from "../util"
+import { EStatusEffect } from "../effects/EStatusEffect.ts"
+
+import { mapRadius, maxOrbSpawnScore, minOrbSpawnScore, powerupChance } from "../util"
 
 /**
  * Shared player logic that runs on both client and server
@@ -27,11 +30,16 @@ export class OrbSpawner extends Controller {
 
 		for (let i = 0; i < orbAmount; i++) {
 			const orb = new OrbState()
+			// 10% chance to spawn a power-up
+			const isPowerup = Math.random() <= powerupChance / 100
 
-			orb.x = Math.floor(Math.random() * (mapRadius - -mapRadius) + -mapRadius)
-			orb.y = Math.floor(Math.random() * (mapRadius - -mapRadius) + -mapRadius)
+			orb.x = randomInt(-mapRadius, mapRadius)
+			orb.y = randomInt(-mapRadius, mapRadius)
 			orb.color = (Math.random() * 0xffffff) << 0
-			orb.score = Math.floor(Math.random() * (maxOrbSpawnScore - minOrbSpawnScore) + 1)
+
+			// Power-ups give 10 score
+			orb.score = !isPowerup ? randomInt(minOrbSpawnScore, maxOrbSpawnScore) : 10
+			orb.statusEffect = isPowerup ? 1 : 0 // randomInt(1, Object.keys(EStatusEffect).length - 1)
 
 			this.spawnOrb(orb)
 		}

@@ -47,7 +47,7 @@ export class GameScene extends Phaser.Scene {
 		this.room = await colyseus.joinOrCreate<GameRoomState>("game_room")
 		const $ = getStateCallbacks(this.room)
 
-		$(this.room.state).players.onAdd((playerState: PlayerState, sessionId: string) => {
+		$(this.room!.state).players.onAdd((playerState: PlayerState, sessionId: string) => {
 			// Create player controller and player actor (only if remote) and save it to the PC array
 
 			let actor = sessionId !== this.room!.sessionId ? new PlayerActor(this, playerState.headPos.x, playerState.headPos.y) : this.localPlayer!
@@ -62,7 +62,7 @@ export class GameScene extends Phaser.Scene {
 		})
 
 		$(this.room!.state).orbs.onAdd((orb) => {
-			this.orbs.set(orb.id, new OrbActor(this, orb.x, orb.y, orb.score, orb.color))
+			this.orbs.set(orb.id, new OrbActor(this, orb))
 		})
 
 		$(this.room!.state).orbs.onRemove((orb) => {
