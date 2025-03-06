@@ -11,7 +11,7 @@ export const minOrbSpawnScore = 1
 export const maxOrbSpawnScore = 5
 
 // Chance to spawn a power-up orb in percentages
-export const powerupChance = 50
+export const powerupChance = 5
 
 export const playerBurnScore = 1
 
