@@ -7,7 +7,7 @@ import tailwindcss from "@tailwindcss/vite"
 export default defineConfig({
 	plugins: [react(), tailwindcss()],
 	server: {
-		allowedHosts: ["elementary-anywhere-adds-euro.trycloudflare.com"],
+		allowedHosts: ["awareness-ivory-mats-equations.trycloudflare.com"],
 		proxy: {
 			/**
 			 * https://discord.com/developers/docs/change-log#activities-proxy-csp-update

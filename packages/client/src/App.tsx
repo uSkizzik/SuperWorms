@@ -8,7 +8,7 @@ import { colyseus } from "./managers/Colyseus.ts"
 
 function App() {
 	const [page, setPage] = useState<"home" | "game">("home")
-	const [status, setStatus] = useState<string>("Loading...")
+	const [status, setStatus] = useState<string>("Loading")
 	const [token, setToken] = useState<null | string>(null)
 	const [username, setUsername] = useState<string>("")
 

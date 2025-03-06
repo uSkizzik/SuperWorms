@@ -3,6 +3,8 @@ import config from "@colyseus/tools"
 import { monitor } from "@colyseus/monitor"
 import { playground } from "@colyseus/playground"
 
+import { discord } from "./managers/Discord.ts"
+
 import { LobbyRoom } from "./rooms/LobbyRoom"
 import { GameRoom } from "./rooms/GameRoom"
 
@@ -30,32 +32,8 @@ export default config({
 			}
 
 			try {
-				// Retrieve access token from Discord API
-				const response = await fetch(`https://discord.com/api/oauth2/token`, {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/x-www-form-urlencoded"
-					},
-					body: new URLSearchParams({
-						client_id: process.env.DISCORD_CLIENT_ID!,
-						client_secret: process.env.DISCORD_CLIENT_SECRET!,
-						grant_type: "authorization_code",
-						code: req.body.code
-					})
-				})
-
-				const { access_token } = await response.json()
-
-				// Retrieve user data from Discord API
-				const user = await (
-					await fetch(`https://discord.com/api/users/@me`, {
-						method: "GET",
-						headers: {
-							"Content-Type": "application/x-www-form-urlencoded",
-							Authorization: `Bearer ${access_token}`
-						}
-					})
-				).json()
+				const access_token = await discord.exchangeCode(req.body.code)
+				const user = await discord.getUserData(access_token)
 
 				res.send({
 					access_token,
@@ -63,7 +41,7 @@ export default config({
 					user
 				})
 			} catch (e: any) {
-				res.status(400).send({ error: e.message })
+				res.status(400).send({ error: e })
 			}
 		})
 

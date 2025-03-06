@@ -7,12 +7,12 @@ export async function authenticate(setStatus: (val: string) => void) {
 		return
 	}
 
-	console.log("Connecting to Discord...")
-	setStatus("Connecting to Discord...")
+	console.log("Connecting to Discord")
+	setStatus("Connecting to Discord")
 	await discord.ready()
 
-	console.log("Connected to Discord, authorizing...")
-	setStatus("Authorizing...")
+	console.log("Connected to Discord, authorizing")
+	setStatus("Authorizing")
 
 	// Authorize with Discord Client
 	const { code } = await discord.commands.authorize({
@@ -46,8 +46,8 @@ export async function authenticate(setStatus: (val: string) => void) {
 	})
 
 	// Retrieve a token and userdata from the embedded app's server
-	console.log("Authorized, exchanging code for token...")
-	setStatus("Exchanging code...")
+	console.log("Authorized, exchanging code for token")
+	setStatus("Exchanging code")
 	const { data } = await colyseus.http.post("/discord_token", {
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({ code })
@@ -59,11 +59,11 @@ export async function authenticate(setStatus: (val: string) => void) {
 
 	// Authenticate with the token, so we can use the Discord API
 	// This is required to listen to SPEAKING events
-	console.log("Code exchanged, authenticating...")
-	setStatus("Authenticating...")
+	console.log("Code exchanged, authenticating")
+	setStatus("Authenticating")
 	await discord.commands.authenticate({ access_token: data.access_token })
 
-	setStatus("Loading...")
+	setStatus("Loading")
 
 	return data
 }

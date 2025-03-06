@@ -19,7 +19,10 @@ export class LobbyRoom extends Room<LobbyRoomState> {
 		console.log(client.sessionId, "joined")
 
 		let state = new UserState()
-		state.username = client.auth?.username
+
+		state.userId = client.auth?.id
+		state.avatar = client.auth?.avatar
+		state.username = client.auth?.global_name ?? client.auth?.username
 
 		this.state.users.set(client.sessionId, state)
 	}
