@@ -6,6 +6,7 @@ function UserStatus({ voiceState, user }: { voiceState: Partial<Types.VoiceState
 		<div className={`tw:flex tw:items-center tw:mb-2 tw:opacity-${voiceState.speaking ? "100" : "50"}`}>
 			<img className="tw:me-2 tw:size-9 tw:rounded-full" src={`https://cdn.discordapp.com/avatars/${user.userId}/${user.avatar}.webp`} />
 			<span className="tw:text-white tw:bg-[#212121aa] tw:rounded-lg tw:px-2 tw:py-1">{user.username}</span>
+			{voiceState.mute || voiceState.self_mute ? <span className="tw:ms-2 tw:text-white tw:bg-[#212121aa] tw:rounded-lg tw:px-2 tw:py-1">Muted</span> : null}
 		</div>
 	)
 }

@@ -1,4 +1,4 @@
-import { useEffect, useId } from "react"
+import { useEffect } from "react"
 import { useImmer } from "use-immer"
 
 import { MapSchema } from "@colyseus/schema"
@@ -13,25 +13,32 @@ import UserStatus from "./UserStatus.tsx"
 function UserList({ users }: { users: MapSchema<UserState> }) {
 	const [voiceStates, updateVoiceStates] = useImmer(new Map<string, Partial<Types.VoiceState & { speaking: boolean }>>())
 
-	const startSpeaking = (data: { user_id: string }) => {
-		updateVoiceStates((draft) => draft.set(data.user_id, { speaking: true }))
+	const startSpeaking = ({ user_id }: { user_id: string }) => {
+		console.log("asd")
+		updateVoiceStates((draft) => draft.set(user_id, { speaking: true }))
 	}
 
-	const stopSpeaking = (data: { user_id: string }) => {
-		updateVoiceStates((draft) => draft.set(data.user_id, { speaking: true }))
+	const stopSpeaking = ({ user_id }: { user_id: string }) => {
+		updateVoiceStates((draft) => draft.set(user_id, { speaking: false }))
 	}
 
-	const updateVoiceState = ({ voice_state }: { voice_state: Types.VoiceState }) => {}
+	const updateVoiceState = ({ user, voice_state }: { user: { user_id: string }; voice_state: Types.VoiceState }) => {
+		updateVoiceStates((draft) => draft.set(user.user_id, voice_state))
+	}
 
 	useEffect(() => {
-		discord.subscribe("SPEAKING_START", startSpeaking, {})
-		discord.subscribe("SPEAKING_STOP", stopSpeaking, {})
-		discord.subscribe("VOICE_STATE_UPDATE", updateVoiceState, { channel_id: discord.channelId as string })
+		const registerEvents = async () => {
+			await discord.subscribe("SPEAKING_START", startSpeaking, { channel_id: discord.channelId as string })
+			await discord.subscribe("SPEAKING_STOP", stopSpeaking, { channel_id: discord.channelId as string })
+			await discord.subscribe("VOICE_STATE_UPDATE", updateVoiceState, { channel_id: discord.channelId as string })
+		}
+
+		registerEvents().catch((e) => console.error(e))
 
 		return () => {
-			discord.unsubscribe("SPEAKING_START", startSpeaking)
-			discord.unsubscribe("SPEAKING_STOP", stopSpeaking)
-			discord.unsubscribe("VOICE_STATE_UPDATE", updateVoiceState)
+			// discord.unsubscribe("SPEAKING_START", startSpeaking)
+			// discord.unsubscribe("SPEAKING_STOP", stopSpeaking)
+			// discord.unsubscribe("VOICE_STATE_UPDATE", updateVoiceState)
 		}
 	}, [])
 

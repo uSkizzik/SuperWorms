@@ -7,7 +7,7 @@ import { colyseus } from "../managers/Colyseus.ts"
 import { discord, isEmbedded } from "../managers/Discord.ts"
 
 import Tips from "../components/Tips.tsx"
-import UserStatus from "../components/UserStatus.tsx"
+import UserList from "../components/UserList.tsx"
 
 function Home({ status, setStatus, token, setPage, setUsername }: { status: string; setStatus: (val: string) => void; token: string | null; setPage: (val: "home" | "game") => void; setUsername: (val: string) => void }) {
 	const [room, setRoom] = useState<Room<LobbyRoomState>>()
@@ -19,7 +19,8 @@ function Home({ status, setStatus, token, setPage, setUsername }: { status: stri
 	}
 
 	room?.onStateChange(() => {
-		setFkngRefresh(fkngRefresh + 1)
+		// This check is actually needed to prevent component state updates before the state is initialized
+		if (typeof fkngRefresh === "number") setFkngRefresh(fkngRefresh + 1)
 	})
 
 	useEffect(() => {
@@ -50,7 +51,7 @@ function Home({ status, setStatus, token, setPage, setUsername }: { status: stri
 					{/*	<span>Sign In with Discord</span>*/}
 					{/*</button>*/}
 
-					<div className="tw:absolute tw:flex tw:flex-col tw:left-5">{room?.state.users ? Array.from(room.state.users.values()).map((u) => <UserStatus user={u} />) : null}</div>
+					{room?.state.users ? <UserList users={room?.state.users} /> : null}
 
 					<div className="tw:mt-26 tw:flex-grow tw:flex tw:items-center tw:flex-col">
 						<img className="tw:w-lg" src="/superworms.png" alt="SuperWorms" />
