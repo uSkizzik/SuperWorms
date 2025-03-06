@@ -41,6 +41,7 @@ export default config({
 					user
 				})
 			} catch (e: any) {
+				console.error(e)
 				res.status(400).send({ error: e })
 			}
 		})

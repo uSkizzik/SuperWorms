@@ -17,6 +17,10 @@ class Discord {
 	 * @returns Access Token
 	 */
 	async exchangeCode(code: string) {
+		if (!(process.env.DISCORD_CLIENT_ID && process.env.DISCORD_CLIENT_SECRET)) {
+			throw "Missing Client ID and / or Client Secret"
+		}
+
 		const response = (await fetch(`https://discord.com/api/oauth2/token`, {
 			method: "POST",
 			headers: {
@@ -47,7 +51,7 @@ class Discord {
 			}).catch((e) => console.error(e))) as Response
 		).json()
 
-		if (!user.id) throw ""
+		if (!user.id) throw "Missing user id"
 		this.authTokens.set(user.id, access_token)
 
 		return user

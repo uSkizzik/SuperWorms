@@ -54,6 +54,7 @@ export async function authenticate(setStatus: (val: string) => void) {
 	})
 
 	if (!data.access_token) {
+		setStatus("ServerError: Missing Access Token")
 		throw new Error("Server-side error")
 	}
 
