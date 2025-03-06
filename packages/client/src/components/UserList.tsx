@@ -1,7 +1,8 @@
-import { useEffect } from "react"
+import { useEffect, useId } from "react"
+import { useImmer } from "use-immer"
 
 import { MapSchema } from "@colyseus/schema"
-import { VoiceState } from "@discord/embedded-app-sdk/output/schema/types"
+import { Types } from "@discord/embedded-app-sdk"
 
 import { UserState } from "@superworms/server/src/states/UserState"
 
@@ -10,14 +11,22 @@ import { discord } from "../managers/Discord.ts"
 import UserStatus from "./UserStatus.tsx"
 
 function UserList({ users }: { users: MapSchema<UserState> }) {
-	const startSpeaking = (data) => {}
-	const stopSpeaking = (data) => {}
-	const updateVoiceState = (newState: VoiceState) => {}
+	const [voiceStates, updateVoiceStates] = useImmer(new Map<string, Partial<Types.VoiceState & { speaking: boolean }>>())
+
+	const startSpeaking = (data: { user_id: string }) => {
+		updateVoiceStates((draft) => draft.set(data.user_id, { speaking: true }))
+	}
+
+	const stopSpeaking = (data: { user_id: string }) => {
+		updateVoiceStates((draft) => draft.set(data.user_id, { speaking: true }))
+	}
+
+	const updateVoiceState = ({ voice_state }: { voice_state: Types.VoiceState }) => {}
 
 	useEffect(() => {
-		discord.subscribe("SPEAKING_START", startSpeaking)
-		discord.subscribe("SPEAKING_STOP", stopSpeaking)
-		discord.subscribe("VOICE_STATE_UPDATE", updateVoiceState)
+		discord.subscribe("SPEAKING_START", startSpeaking, {})
+		discord.subscribe("SPEAKING_STOP", stopSpeaking, {})
+		discord.subscribe("VOICE_STATE_UPDATE", updateVoiceState, { channel_id: discord.channelId as string })
 
 		return () => {
 			discord.unsubscribe("SPEAKING_START", startSpeaking)
@@ -26,7 +35,7 @@ function UserList({ users }: { users: MapSchema<UserState> }) {
 		}
 	}, [])
 
-	return <div className="tw:absolute tw:flex tw:flex-col tw:left-5">{users ? Array.from(users.values()).map((u) => <UserStatus user={u} />) : null}</div>
+	return <div className="tw:absolute tw:flex tw:flex-col tw:left-5">{users ? Array.from(users.values()).map((u, i) => <UserStatus key={i} voiceState={voiceStates.get(u.userId) || {}} user={u} />) : null}</div>
 }
 
 export default UserList
