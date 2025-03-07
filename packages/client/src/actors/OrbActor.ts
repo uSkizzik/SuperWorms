@@ -8,7 +8,7 @@ export class OrbActor extends Phaser.GameObjects.GameObject {
 	scene: GameScene
 	orbState: OrbState
 
-	shape: Phaser.GameObjects.GameObject
+	shape: Phaser.GameObjects.Arc | Phaser.GameObjects.Rectangle
 
 	constructor(scene: GameScene, state: OrbState) {
 		super(scene, "orb")
@@ -20,6 +20,9 @@ export class OrbActor extends Phaser.GameObjects.GameObject {
 
 		if (this.orbState.statusEffect) this.shape = this.scene.add.rectangle(this.orbState.x, this.orbState.y, this.orbState.score * 2, this.orbState.score * 2, this.orbState.color)
 		else this.shape = this.scene.add.circle(this.orbState.x, this.orbState.y, this.orbState.score * 2, this.orbState.color)
+
+		// this.shape.postFX.addBloom(0xff0000, 10, 10, 2, 1)
+		// this.shape.postFX.addBloom(0xff0000, 2, 2, 2, 1.2)
 	}
 
 	destroy(fromScene?: boolean) {

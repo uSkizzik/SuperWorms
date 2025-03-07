@@ -156,7 +156,16 @@ export class PlayerController extends Controller {
 		let dy = ptrY - headPos.y
 
 		if (Math.abs(dx) > 1 || Math.abs(dy) > 1) {
-			angle = Math.atan2(dy, dx)
+			let targetAngle = Math.atan2(dy, dx)
+
+			// Lerp the angle to prevent sharp turns
+			let turnSpeed = 0.1 // Adjust this between 0 and 1 for smoothness
+			let angleDiff = targetAngle - angle
+
+			// Ensure the angle difference is within -PI to PI for shortest rotation
+			angleDiff = Math.atan2(Math.sin(angleDiff), Math.cos(angleDiff))
+
+			angle += angleDiff * turnSpeed
 		}
 
 		if (!this.actor) {
