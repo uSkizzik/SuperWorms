@@ -11,7 +11,7 @@ export class PlayerActor extends Phaser.GameObjects.GameObject {
 	headPos: Phaser.Geom.Point
 	tailPos: Phaser.Geom.Point
 
-	head: Phaser.GameObjects.Group
+	head: Phaser.GameObjects.GameObject
 	bodyParts: Phaser.GameObjects.Group
 
 	angle: number = 0
@@ -26,15 +26,21 @@ export class PlayerActor extends Phaser.GameObjects.GameObject {
 		this.headPos = new Phaser.Geom.Point(x, y)
 		this.tailPos = new Phaser.Geom.Point(x, y)
 
-		this.bodyParts = scene.add.group()
+		this.bodyParts = scene.add.group().setOrigin(0.5)
 
-		this.head = this.bodyParts.create(x * 16, y * 16, "body")
-		this.head.setOrigin(0.5)
+		this.head = this.createBodyPart(x, y)
 
 		this.addToUpdateList()
 
 		this.scene.input.on("pointerdown", () => this.controller!.startSprint())
 		this.scene.input.on("pointerup", () => this.controller!.stopSprint())
+	}
+
+	createBodyPart(x: number, y: number): Phaser.GameObjects.GameObject {
+		const circle = this.scene.add.circle(x, y, 8, 0xff0000)
+		this.bodyParts.add(circle)
+
+		return circle
 	}
 
 	preUpdate(delta: number) {
@@ -83,7 +89,7 @@ export class PlayerActor extends Phaser.GameObjects.GameObject {
 
 		if (diff > 0) {
 			for (let i = 0; i < diff; i++) {
-				this.bodyParts.create(this.tailPos.x, this.tailPos.y, "body").setOrigin(0.5)
+				this.createBodyPart(this.tailPos.x, this.tailPos.y)
 			}
 		} else {
 			let bodyParts = this.bodyParts.getChildren()
