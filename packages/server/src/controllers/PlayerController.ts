@@ -77,7 +77,7 @@ export class PlayerController extends Controller {
 				this.room.orbSpawner.removeOrb(nearestOrb)
 				this.serverUpdateLength(nearestOrb.score)
 
-				if (nearestOrb.statusEffect) {
+				if (nearestOrb.statusEffect && nearestOrb.statusEffect > 0) {
 					this.state.statusEffects.add(nearestOrb.statusEffect)
 					this.statusEffectAdded(nearestOrb.statusEffect)
 				}

@@ -30,6 +30,7 @@ export const tickRate = 1000 / fpsLimit
 type StatusEffectConstructor<T extends StatusEffect = StatusEffect> = new (...args: ConstructorParameters<typeof StatusEffect>) => T
 
 export const statusEffects: { [k: EStatusEffect]: StatusEffectConstructor } = {
+	[EStatusEffect.NONE]: null as StatusEffectConstructor,
 	[EStatusEffect.BURNOUT]: BurnoutEffect,
 	[EStatusEffect.MAGNET]: MagnetEffect,
 	[EStatusEffect.KAMIKAZE]: KamikazeEffect,
