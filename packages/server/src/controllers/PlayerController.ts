@@ -1,4 +1,5 @@
 import { getStateCallbacks } from "colyseus.js"
+import { Client } from "@colyseus/core"
 
 import { PlayerActor } from "@superworms/client/src/actors/PlayerActor"
 
@@ -6,6 +7,7 @@ import { Controller } from "./Controller"
 
 import { GameRoom } from "../rooms/GameRoom"
 import { PlayerState } from "../states/PlayerState"
+import type { ZoneState } from "../states/ZoneState.ts"
 
 import { EStatusEffect } from "../effects/EStatusEffect.ts"
 import { StatusEffect } from "../effects/StatusEffect.ts"
@@ -16,19 +18,25 @@ import { normalPickupRadius, normalSpeed, playerBurnScore, sprintSpeed, statusEf
  * Shared player logic that runs on both client and server
  */
 export class PlayerController extends Controller {
-	sessionId: string
+	readonly sessionId: string
+	readonly client: Client | null
 
-	state: PlayerState
-	room: GameRoom
+	readonly state: PlayerState
+	readonly room: GameRoom
 
-	actor?: PlayerActor
+	readonly actor?: PlayerActor
 
 	effectHandlers: StatusEffect[] = []
 
-	constructor(sessionId: string, state: PlayerState, room: GameRoom, actor?: PlayerActor) {
+	// Radius of zones the player can see
+	static readonly viewRadius = 6
+
+	constructor(client: string | Client, state: PlayerState, room: GameRoom, actor?: PlayerActor) {
 		super()
 
-		this.sessionId = sessionId
+		this.sessionId = typeof client !== "string" ? client.sessionId : client
+		this.client = typeof client !== "string" ? client : null
+
 		this.state = state
 		this.room = room
 		this.actor = actor
@@ -57,7 +65,8 @@ export class PlayerController extends Controller {
 	 */
 	tick() {
 		if (this.isServer()) {
-			this.calculateMovement()
+			// this.calculateMovement()
+			this.loadZones()
 
 			// Make sure we don't have a NONE status effect
 			this.state.statusEffects.delete(EStatusEffect.NONE)
@@ -141,6 +150,49 @@ export class PlayerController extends Controller {
 				bodyParts.splice(bodyParts.length - diff * -1, diff * -1)
 			}
 		} else throw "This method can run only on the server!"
+	}
+
+	/**
+	 * Get an array of zone states within the player's viewDistance
+	 * @param playerX
+	 * @param playerY
+	 */
+	getVisibleZones(playerX, playerY): ZoneState[] {
+		if (this.isServer()) {
+			const currentZone = this.room.zoneManager.findZoneByCoords(playerX, playerY)
+			if (currentZone === null) throw "Player outside of map bounds!"
+
+			const nearbyZones: ZoneState[] = []
+
+			for (let dx = -PlayerController.viewRadius; dx <= PlayerController.viewRadius; dx++) {
+				for (let dy = -PlayerController.viewRadius; dy <= PlayerController.viewRadius; dy++) {
+					const zone = this.room.zoneManager.findZone(currentZone!.x + dx, currentZone!.y + dy)
+					if (zone !== null) nearbyZones.push(zone)
+					else console.warn("Tried querying for a non-existent zone", currentZone!.x + dx + "/" + currentZone!.y + dy)
+				}
+			}
+
+			return nearbyZones
+		}
+	}
+
+	loadZones() {
+		if (this.isServer()) {
+			const newZones = this.getVisibleZones(this.state.headPos.x, this.state.headPos.y)
+
+			const zonesToLoad = newZones.filter((zone) => !this.state.loadedZones.toArray().includes(zone))
+			const zonesToUnload = this.state.loadedZones.toArray().filter((zone) => !newZones.includes(zone))
+
+			zonesToLoad.forEach((zone) => {
+				this.state.loadedZones.add(zone)
+				this.client!.view!.add(zone)
+			})
+
+			zonesToUnload.forEach((zone) => {
+				this.client!.view!.remove(zone)
+				this.state.loadedZones.delete(zone)
+			})
+		}
 	}
 
 	/**

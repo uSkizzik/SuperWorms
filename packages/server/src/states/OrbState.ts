@@ -6,7 +6,7 @@ import { EStatusEffect } from "../effects/EStatusEffect.ts"
 import { PointState } from "./PointState"
 
 export class OrbState extends PointState {
-	@type("string") id = crypto.randomUUID()
+	@type("string") id = crypto.randomBytes(16).toString("hex")
 
 	@type("number") score: number = 1
 	@type("number") color: number = 0xff0000

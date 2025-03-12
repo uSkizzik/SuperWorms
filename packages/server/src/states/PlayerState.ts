@@ -1,8 +1,9 @@
-import { Schema, SetSchema, type } from "@colyseus/schema"
+import { Schema, SetSchema, type, view } from "@colyseus/schema"
 
 import { EStatusEffect } from "../effects/EStatusEffect.ts"
 
 import { PointState } from "./PointState"
+import { ZoneState } from "./ZoneState"
 
 import { normalPickupRadius, normalSpeed } from "../util"
 
@@ -24,4 +25,6 @@ export class PlayerState extends Schema {
 
 	@type("number") score: number = 10
 	@type({ set: "number" }) statusEffects: SetSchema<EStatusEffect> = new SetSchema<EStatusEffect>()
+
+	@view() @type({ set: ZoneState }) loadedZones: SetSchema<ZoneState> = new SetSchema<ZoneState>()
 }

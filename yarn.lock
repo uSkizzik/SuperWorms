@@ -180,10 +180,10 @@
   resolved "https://registry.yarnpkg.com/@colyseus/clock/-/clock-1.0.0.tgz#8adbe8b01e87b783334d32a019a74fb07eaf5dd7"
   integrity sha512-x1un5rFEgilVAA6ukSG8GFgtpX/hsmL5BtrPdxLx0dbPU7zwpTVXez2qoGza7YYS5QTvVD45gbHyX/KaaEWSZQ==
 
-"@colyseus/core@^0.16.4":
-  version "0.16.4"
-  resolved "https://registry.yarnpkg.com/@colyseus/core/-/core-0.16.4.tgz#60d779c581777dd1d698796552e9532e1b661d80"
-  integrity sha512-jJD44cyvu/eB4HzWeFOsU6flC3JLUO7BCGUdwtj5IzzE7DlOosCnbk4ETJM4HKkbYbdisZQRVbfmQOlqpVLjyQ==
+"@colyseus/core@^0.16.11":
+  version "0.16.11"
+  resolved "https://registry.yarnpkg.com/@colyseus/core/-/core-0.16.11.tgz#1c73def951b95671d6f95502dd5c2ad06bce362d"
+  integrity sha512-uKK7pM+gagCx2NZljGNYysJchF1ji7Z+92WmHRqZSMtFgZ6Bea9ooCQgI/nWYBnSHktQsePSnRJHOu/I+w4Kiw==
   dependencies:
     "@colyseus/greeting-banner" "^2.0.6"
     "@colyseus/msgpackr" "^1.10.3"
@@ -196,7 +196,7 @@
   resolved "https://registry.yarnpkg.com/@colyseus/greeting-banner/-/greeting-banner-2.0.6.tgz#7f51f1897e0c44f423f7e60e86eaadef3fa6f7f5"
   integrity sha512-65nK7KnJn6g3ArtJqNfVX+Mx7xTlBka04kSwloLP7s24UpCEaK7bMGRLgkzfnysARzlVh1eV4jynBWZN82dYwQ==
 
-"@colyseus/loadtest@^0.16.0":
+"@colyseus/loadtest@^0.16.1":
   version "0.16.1"
   resolved "https://registry.yarnpkg.com/@colyseus/loadtest/-/loadtest-0.16.1.tgz#0de5302f1b52fde6f8524cd8aa53660e13a4bafd"
   integrity sha512-Plo3BPfQwCtfup4O/tiwQ3lSvGB8ACnGqfztr+ibJg/2cKZl44JnRsiDTQF8ZbdO6yjKkXa/22HLyutP0rKsPA==
@@ -207,10 +207,10 @@
     typescript ">=4.3.5"
     ws "^7.4.5"
 
-"@colyseus/monitor@^0.16.0":
-  version "0.16.0"
-  resolved "https://registry.yarnpkg.com/@colyseus/monitor/-/monitor-0.16.0.tgz#d24adbf27bdde08ef4a18413c80a8da99737386d"
-  integrity sha512-h47wg4JiR4WF4VpAI3f71wQT92sXnJm8l/xiZt6fN5otyE8GHeQ1Wi3FoGkDhr40c6U01vaG/A4l/rVfeBPyrQ==
+"@colyseus/monitor@^0.16.6":
+  version "0.16.6"
+  resolved "https://registry.yarnpkg.com/@colyseus/monitor/-/monitor-0.16.6.tgz#caba0feee464741ab9277cf7770dce83fa342be2"
+  integrity sha512-Fhgzq4k3tHJ79vhTgtQVWW//k5n2BwzQ8InqonhKlgr51dLdHUIbpOl3BbTHg7dP3nVzrre4W0ecc5n7aEa5IQ==
   dependencies:
     express "^4.16.2"
     node-os-utils "^1.2.0"
@@ -222,22 +222,22 @@
   optionalDependencies:
     msgpackr-extract "^3.0.2"
 
-"@colyseus/playground@^0.16.0":
-  version "0.16.2"
-  resolved "https://registry.yarnpkg.com/@colyseus/playground/-/playground-0.16.2.tgz#d652f174947e94bb6e92d42a7a107b272e472440"
-  integrity sha512-BWhiIR7rmBwj0A3PSETkqAeIqCdXwfFgJKNfykpHWIh8grVvCXgQVbyUv0l3d8pA7RPkiGj1LU1y891ucQjswQ==
+"@colyseus/playground@^0.16.3":
+  version "0.16.3"
+  resolved "https://registry.yarnpkg.com/@colyseus/playground/-/playground-0.16.3.tgz#a195bb0cef0bba47e397adf3702f2dda8dc591ea"
+  integrity sha512-IQ21B6VLBMNcKk38CTSiQ3Aoix5fNVz+Nclg3uHXQE5cUx6cLTu+QKgI9f4BOJG+R8wbHpI9MNvGDycRvUbotg==
 
 "@colyseus/schema@^3.0.0":
   version "3.0.11"
   resolved "https://registry.yarnpkg.com/@colyseus/schema/-/schema-3.0.11.tgz#e214b13490c6364f5c6d224a88d036fa71f1a482"
   integrity sha512-2FrIrlWEaRKRrCzLPvV+WV+ccNBVn2H3iy6DTKf+k0D42fmkJFrOdZv0KSRjDe+L8IXkCYvkKowmG2v4paQc7Q==
 
-"@colyseus/schema@^3.0.13":
-  version "3.0.13"
-  resolved "https://registry.yarnpkg.com/@colyseus/schema/-/schema-3.0.13.tgz#7e169d2722b75edf28aec7f8bf8bfd1a341cae63"
-  integrity sha512-3tqVUdwKKbchnJkZfppHlFuF8cHhLj5PNDFOdIAIbmIdv5ji0uJgkVSiFDRVPwrVqdp0Duxrx5VlDwPYRxdwlg==
+"@colyseus/schema@^3.0.19":
+  version "3.0.19"
+  resolved "https://registry.yarnpkg.com/@colyseus/schema/-/schema-3.0.19.tgz#f9ad414118a98648ce7af7f1e4513010c8a18e5b"
+  integrity sha512-lMbxfKuUTYMK4kl084mr6zef21dcxizb8rbDWVShPeXwX6NbePz1yvqeKmQr2CbQAx6DN3waqsenDeuxvrMvKg==
 
-"@colyseus/testing@^0.16.0":
+"@colyseus/testing@^0.16.3":
   version "0.16.3"
   resolved "https://registry.yarnpkg.com/@colyseus/testing/-/testing-0.16.3.tgz#2d7b815472d1ede9722aaade7b6c84a4e9af6032"
   integrity sha512-RzcsKBUngjSPVL1EgGPyMZ2bs3vqh3PjA449QPfJcakDVDSFrPgNRMS/9/jxx7O30TybsQoZszyTKkH9FTnjGg==
@@ -251,22 +251,22 @@
   dependencies:
     "@colyseus/clock" "^1.0.0"
 
-"@colyseus/tools@^0.16.0":
-  version "0.16.2"
-  resolved "https://registry.yarnpkg.com/@colyseus/tools/-/tools-0.16.2.tgz#cc510b2777454b9b92be5c741064cf91899d1825"
-  integrity sha512-2l26ZjcrC/J4h5sVRyRGApR7eAWrJJT/9ancjz+HHUyNIf+PXh5O3d9oQb1GPKzA3SlV3kz/OF3V+V03Syv/pg==
+"@colyseus/tools@^0.16.3":
+  version "0.16.3"
+  resolved "https://registry.yarnpkg.com/@colyseus/tools/-/tools-0.16.3.tgz#7f2746595a7da8649093f0482fe416480278c65b"
+  integrity sha512-UctQ7oX9kKPnmCsimxSH4NXlR3Atzbt+fIn6SKueICteyKMYTaj07IGvGgK80s7j6zt3A9kcZwMQjUpi5Ny/bw==
   dependencies:
     "@pm2/io" "^6.0.1"
     cors "^2.8.5"
     dotenv "^8.2.0"
     express "^4.16.2"
 
-"@colyseus/ws-transport@^0.16.2":
-  version "0.16.2"
-  resolved "https://registry.yarnpkg.com/@colyseus/ws-transport/-/ws-transport-0.16.2.tgz#27a688b35c387fd68818dab00202f0fa3bda85e0"
-  integrity sha512-4DofvrJJ6T1RyLqx+PB3oNARfKctzOPhoJ+sRJcFnYUu/6yJhFS8TDcN9mVCYWWjDhCM3TvTesQz6f2J2QbXwg==
+"@colyseus/ws-transport@^0.16.3":
+  version "0.16.3"
+  resolved "https://registry.yarnpkg.com/@colyseus/ws-transport/-/ws-transport-0.16.3.tgz#f76a9e7352f4b5f154723b1bc31335bb8be0703a"
+  integrity sha512-RCNghW0UM2Ql4obkju7/D94Ir4ijD+lmxTmcXCuLc4teXy+GRZEZDfeiO349jv8rdmJZSFitUvz5tub5GKM5bQ==
   dependencies:
-    "@types/ws" "^7.4.4"
+    "@types/ws" "^8.5.14"
     ws "^8.18.0"
 
 "@cspotcode/source-map-support@^0.8.0":
@@ -1098,10 +1098,10 @@
   resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-10.0.0.tgz#e9c07fe50da0f53dc24970cca94d619ff03f6f6d"
   integrity sha512-7gqG38EyHgyP1S+7+xomFtL+ZNHcKv6DwNaCZmJmo1vgMugyF3TCnXVg4t1uk89mLNwnLtnY3TpOpCOyp1/xHQ==
 
-"@types/ws@^7.4.4":
-  version "7.4.7"
-  resolved "https://registry.yarnpkg.com/@types/ws/-/ws-7.4.7.tgz#f7c390a36f7a0679aa69de2d501319f4f8d9b702"
-  integrity sha512-JQbbmxZTZehdc2iszGKs5oC3NFnjeay7mtAWrdt7qNtAVK0g19muApzAy4bm9byz79xa2ZnO/BOBC2R8RC5Lww==
+"@types/ws@^8.5.14":
+  version "8.18.0"
+  resolved "https://registry.yarnpkg.com/@types/ws/-/ws-8.18.0.tgz#8a2ec491d6f0685ceaab9a9b7ff44146236993b5"
+  integrity sha512-8svvI3hMyvN0kKCJMvTJP/x6Y/EoQbepff882wL+Sn5QsXb3etnamgrJq4isrBxSJj5L2AuXcI0+bgkoAXGUJw==
   dependencies:
     "@types/node" "*"
 
@@ -1512,7 +1512,7 @@ color-name@~1.1.4:
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.4.tgz#c2a09a87acbde69543de6f63fa3995c826c536a2"
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
 
-colyseus.js@^0.16.0, colyseus.js@^0.16.3:
+colyseus.js@^0.16.0:
   version "0.16.3"
   resolved "https://registry.yarnpkg.com/colyseus.js/-/colyseus.js-0.16.3.tgz#32348eaad491e5608161467ef78403de0a59c510"
   integrity sha512-JyBz5D6Pmk10ACvivUc/WyMePmnSrC5DpYYBvM8bl4xfB3BQL7H5l94EPHA1VTII7rsjhXxew4OvbVr1viSA7g==
@@ -1523,10 +1523,21 @@ colyseus.js@^0.16.0, colyseus.js@^0.16.3:
     tslib "^2.1.0"
     ws "^8.13.0"
 
-colyseus@^0.16.0:
-  version "0.16.2"
-  resolved "https://registry.yarnpkg.com/colyseus/-/colyseus-0.16.2.tgz#26c79307771d24d48eeef9112556956dbe158afe"
-  integrity sha512-VtU/fJziT6iijGueod98AMnA55fiiyyIbNtQDRmTgtn72LOjSOMoRoFLdMrrKQ11mU1Xx5gpywJ2DbHIHly0XA==
+colyseus.js@^0.16.10:
+  version "0.16.10"
+  resolved "https://registry.yarnpkg.com/colyseus.js/-/colyseus.js-0.16.10.tgz#c11b75b69a4f7ca52be4c5fd68feb964371d04d0"
+  integrity sha512-YPHb53oxHueG68ulytT2uHHBFvHYxhIKit35VKHBo5Oplj/QMoiNtRWEqQ4YFk7OzirKbIEUHIaCfH/90PgtKg==
+  dependencies:
+    "@colyseus/msgpackr" "^1.10.5"
+    "@colyseus/schema" "^3.0.0"
+    httpie "^2.0.0-next.13"
+    tslib "^2.1.0"
+    ws "^8.13.0"
+
+colyseus@^0.16.3:
+  version "0.16.3"
+  resolved "https://registry.yarnpkg.com/colyseus/-/colyseus-0.16.3.tgz#760bd0fb54bb2e3671f9578e08002a2aaf28df02"
+  integrity sha512-CbuaASic//2fd2wFYzpUEaW+PmZrmFgIBqPXaH3f28AHn871GKk1jM5vzmFqCh3W0PMGiXpeEJZovtyziCaiBQ==
 
 combined-stream@^1.0.8:
   version "1.0.8"

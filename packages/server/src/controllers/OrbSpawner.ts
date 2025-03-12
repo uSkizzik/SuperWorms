@@ -47,13 +47,17 @@ export class OrbSpawner extends Controller {
 	}
 
 	spawnOrb(orb: OrbState) {
-		this.room.state.orbs.add(orb)
+		this.room.serverOrbs.add(orb)
+		this.room.zoneManager.addOrb(orb)
+
 		// TODO: Do not rebuild tree on spawn, instead rebuild periodically
 		this.rebuildTrees()
 	}
 
 	removeOrb(orb: OrbState) {
-		this.room.state.orbs.delete(orb)
+		this.room.serverOrbs.delete(orb)
+		this.room.zoneManager.removeOrb(orb)
+
 		this.rebuildTrees()
 	}
 
@@ -93,7 +97,7 @@ export class OrbSpawner extends Controller {
 
 	private rebuildTrees() {
 		this.orbTree = new kdTree<OrbState>(
-			this.room.state.orbs.toArray(),
+			Array.from(this.room.serverOrbs),
 			// .filter((o) => o.statusEffect === 0)
 			this.treeDistance,
 			["x", "y"]

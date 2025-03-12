@@ -22,7 +22,10 @@ export const normalSpeed = 350
 export const sprintSpeed = 650
 export const burnoutSpeed = 850
 
+export const zoneSize = 256
+
 export const mapRadius = 2000
+export const maxMapRadius = 32_768
 
 export const fpsLimit = 60
 export const tickRate = 1000 / fpsLimit
