@@ -65,32 +65,32 @@ export class PlayerController extends Controller {
 	 */
 	tick() {
 		if (this.isServer()) {
-			// this.calculateMovement()
+			this.calculateMovement()
 			this.loadZones()
 
 			// Make sure we don't have a NONE status effect
 			this.state.statusEffects.delete(EStatusEffect.NONE)
 
-			let nearestOrb = this.room.orbSpawner.findNearest(
-				{
-					x: this.state.headPos.x,
-					y: this.state.headPos.y
-				},
-				normalPickupRadius,
-				this.state.statusEffects.size >= 1
-			)
-
-			if (nearestOrb) {
-				if (nearestOrb.statusEffect && this.state.statusEffects.size >= 1) return
-
-				this.room.orbSpawner.removeOrb(nearestOrb)
-				this.serverUpdateLength(nearestOrb.score)
-
-				if (nearestOrb.statusEffect && nearestOrb.statusEffect > 0) {
-					this.state.statusEffects.add(nearestOrb.statusEffect)
-					this.statusEffectAdded(nearestOrb.statusEffect)
-				}
-			}
+			// let nearestOrb = this.room.orbSpawner.findNearest(
+			// 	{
+			// 		x: this.state.headPos.x,
+			// 		y: this.state.headPos.y
+			// 	},
+			// 	normalPickupRadius,
+			// 	this.state.statusEffects.size >= 1
+			// )
+			//
+			// if (nearestOrb) {
+			// 	if (nearestOrb.statusEffect && this.state.statusEffects.size >= 1) return
+			//
+			// 	this.room.orbSpawner.removeOrb(nearestOrb)
+			// 	this.serverUpdateLength(nearestOrb.score)
+			//
+			// 	if (nearestOrb.statusEffect && nearestOrb.statusEffect > 0) {
+			// 		this.state.statusEffects.add(nearestOrb.statusEffect)
+			// 		this.statusEffectAdded(nearestOrb.statusEffect)
+			// 	}
+			// }
 
 			if (this.state.score <= 10) this.stopSprint()
 			if (this.state.isSprinting) this.serverUpdateLength(playerBurnScore * -1)
@@ -157,7 +157,7 @@ export class PlayerController extends Controller {
 	 * @param playerX
 	 * @param playerY
 	 */
-	getVisibleZones(playerX, playerY): ZoneState[] {
+	getVisibleZones(playerX: number, playerY: number): ZoneState[] {
 		if (this.isServer()) {
 			const currentZone = this.room.zoneManager.findZoneByCoords(playerX, playerY)
 			if (currentZone === null) throw "Player outside of map bounds!"
@@ -173,7 +173,7 @@ export class PlayerController extends Controller {
 			}
 
 			return nearbyZones
-		}
+		} else return this.state.loadedZones.toArray()
 	}
 
 	loadZones() {
@@ -189,8 +189,8 @@ export class PlayerController extends Controller {
 			})
 
 			zonesToUnload.forEach((zone) => {
-				this.client!.view!.remove(zone)
 				this.state.loadedZones.delete(zone)
+				this.client!.view!.remove(zone)
 			})
 		}
 	}
