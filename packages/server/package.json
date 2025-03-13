@@ -20,7 +20,7 @@
 		"@colyseus/core": "^0.16.11",
 		"@colyseus/monitor": "^0.16.6",
 		"@colyseus/playground": "^0.16.3",
-		"@colyseus/schema": "^3.0.19",
+		"@colyseus/schema": "^3.0.20",
 		"@colyseus/tools": "^0.16.3",
 		"@colyseus/ws-transport": "^0.16.3",
 		"colyseus": "^0.16.3",

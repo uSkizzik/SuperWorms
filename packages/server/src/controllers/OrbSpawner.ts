@@ -8,7 +8,7 @@ import { OrbState } from "../states/OrbState"
 
 import { EStatusEffect } from "../effects/EStatusEffect.ts"
 
-import { mapRadius, maxOrbSpawnScore, minOrbSpawnScore, powerupChance } from "../util"
+import { mapRadius, maxMapRadius, maxOrbSpawnScore, minOrbSpawnScore, powerupChance } from "../util"
 
 /**
  * Shared player logic that runs on both client and server
@@ -26,7 +26,7 @@ export class OrbSpawner extends Controller {
 
 	spawnInitialOrbs() {
 		// Calculate 50% of the map area and spawn orbs
-		const mapArea = Math.sqrt(mapRadius) * Math.PI
+		const mapArea = Math.sqrt(maxMapRadius) * Math.PI
 		const orbAmount = mapArea * 5
 
 		for (let i = 0; i < orbAmount; i++) {
@@ -34,15 +34,15 @@ export class OrbSpawner extends Controller {
 			// 10% chance to spawn a power-up
 			const isPowerup = Math.random() <= powerupChance / 100
 
-			orb.x = randomInt(-mapRadius, mapRadius)
-			orb.y = randomInt(-mapRadius, mapRadius)
+			orb.x = randomInt(-maxMapRadius, maxMapRadius)
+			orb.y = randomInt(-maxMapRadius, maxMapRadius)
 			orb.color = (Math.random() * 0xffffff) << 0
 
 			// Power-ups give 10 score
 			orb.score = !isPowerup ? randomInt(minOrbSpawnScore, maxOrbSpawnScore) : 10
 			orb.statusEffect = isPowerup ? randomInt(1, Object.keys(EStatusEffect).length - 2) : 0
 
-			this.spawnOrb(orb)
+			// this.spawnOrb(orb)
 		}
 	}
 

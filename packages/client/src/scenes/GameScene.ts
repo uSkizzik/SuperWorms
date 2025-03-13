@@ -26,6 +26,8 @@ export class GameScene extends Phaser.Scene {
 	// Map of sessionIds to player controllers
 	players = new Map<string, PlayerController>()
 
+	bg?: Phaser.GameObjects.TileSprite
+
 	constructor() {
 		super("GameScene")
 	}
@@ -39,7 +41,7 @@ export class GameScene extends Phaser.Scene {
 		this.debugger = new Debugger(this)
 		this.debugger.registerInputs()
 
-		this.add.tileSprite(0, 0, PlayerController.viewRadius * 2 * zoneSize, PlayerController.viewRadius * 2 * zoneSize, "bg").setDepth(0)
+		this.bg = this.add.tileSprite(0, 0, PlayerController.viewRadius * 2 * zoneSize, PlayerController.viewRadius * 2 * zoneSize, "bg").setDepth(0)
 
 		// Spawn local player actor
 		this.localPlayer = new PlayerActor(this, 0, 0)
@@ -69,12 +71,14 @@ export class GameScene extends Phaser.Scene {
 
 			if (sessionId === this.room!.sessionId) {
 				$(playerState).loadedZones.onAdd((zone) => {
-					zone.orbs?.forEach((o) => this.spawnOrb(o))
-					$(zone).orbs.onAdd((o) => this.spawnOrb(o))
+					zone.orbs?.forEach((orb) => this.spawnOrb(orb))
 
-					$(zone).orbs.onRemove((orb) => {
-						this.orbs.delete(orb.id)
-					})
+					$(zone).orbs.onAdd((orb) => this.spawnOrb(orb))
+					$(zone).orbs.onRemove((orb) => this.deleteOrb(orb.id))
+				})
+
+				$(playerState).loadedZones.onRemove((zone) => {
+					zone.orbs?.forEach((orb) => this.deleteOrb(orb))
 				})
 			}
 		})
@@ -83,10 +87,20 @@ export class GameScene extends Phaser.Scene {
 	update(time: number, delta: number) {
 		super.update(time, delta)
 		this.debugger?.tick()
+
+		if (this.bg) {
+			// this.bg.x = this.cameras.main.x
+			// this.bg.y = this.cameras.main.y
+		}
 	}
 
 	spawnOrb(orb: OrbState) {
 		if (!this.orbs.has(orb.id)) this.orbs.set(orb.id, new OrbActor(this, orb))
+	}
+
+	deleteOrb(orb: OrbState) {
+		this.orbs.get(orb.id)?.destroy()
+		this.orbs.delete(orb.id)
 	}
 
 	serverNewPositions(playerState: PlayerState, sessionId: string) {

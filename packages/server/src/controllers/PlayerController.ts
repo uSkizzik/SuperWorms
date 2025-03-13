@@ -12,7 +12,7 @@ import type { ZoneState } from "../states/ZoneState.ts"
 import { EStatusEffect } from "../effects/EStatusEffect.ts"
 import { StatusEffect } from "../effects/StatusEffect.ts"
 
-import { normalPickupRadius, normalSpeed, playerBurnScore, sprintSpeed, statusEffects } from "../util"
+import { mapRadius, maxMapRadius, normalPickupRadius, normalSpeed, playerBurnScore, sprintSpeed, statusEffects } from "../util"
 
 /**
  * Shared player logic that runs on both client and server
@@ -66,6 +66,12 @@ export class PlayerController extends Controller {
 	tick() {
 		if (this.isServer()) {
 			this.calculateMovement()
+
+			if (this.state.headPos.x > maxMapRadius || this.state.headPos.x < -mapRadius || this.state.headPos.y < -maxMapRadius || this.state.headPos.y > maxMapRadius) {
+				console.error("Player outside of map bounds!")
+				this.client?.leave(4004, "Player out of bounds!")
+			}
+
 			this.loadZones()
 
 			// Make sure we don't have a NONE status effect
@@ -168,7 +174,7 @@ export class PlayerController extends Controller {
 				for (let dy = -PlayerController.viewRadius; dy <= PlayerController.viewRadius; dy++) {
 					const zone = this.room.zoneManager.findZone(currentZone!.x + dx, currentZone!.y + dy)
 					if (zone !== null) nearbyZones.push(zone)
-					else console.warn("Tried querying for a non-existent zone", currentZone!.x + dx + "/" + currentZone!.y + dy)
+					else console.warn("Tried querying for a non-existent zone", currentZone!.x + dx + "/" + (currentZone!.y + dy))
 				}
 			}
 

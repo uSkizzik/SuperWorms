@@ -22,12 +22,14 @@ export class ZoneManager extends Controller {
 	}
 
 	serverInitZones() {
-		for (let i = 0; i < maxMapRadius / zoneSize; i++) {
-			for (let j = 0; j < maxMapRadius / zoneSize; j++) {
+		const zoneAmount = maxMapRadius / zoneSize
+
+		for (let i = -zoneAmount; i <= zoneAmount; i++) {
+			for (let j = -zoneAmount; j <= zoneAmount; j++) {
 				const state = new ZoneState()
 
-				state.x = i - maxMapRadius / zoneSize / 2
-				state.y = j - maxMapRadius / zoneSize / 2
+				state.x = i * zoneSize
+				state.y = j * zoneSize
 
 				this.zoneStates.push(state)
 			}
