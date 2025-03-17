@@ -28,8 +28,8 @@ export class ZoneManager extends Controller {
 			for (let j = -zoneAmount; j <= zoneAmount; j++) {
 				const state = new ZoneState()
 
-				state.x = i * zoneSize
-				state.y = j * zoneSize
+				state.x = i
+				state.y = j
 
 				this.zoneStates.push(state)
 			}

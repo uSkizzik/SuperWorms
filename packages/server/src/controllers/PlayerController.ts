@@ -31,6 +31,8 @@ export class PlayerController extends Controller {
 	// Radius of zones the player can see
 	static readonly viewRadius = 6
 
+	private lastZone: ZoneState
+
 	constructor(client: string | Client, state: PlayerState, room: GameRoom, actor?: PlayerActor) {
 		super()
 
@@ -67,20 +69,25 @@ export class PlayerController extends Controller {
 		if (this.isServer()) {
 			this.calculateMovement()
 
-			if (this.state.headPos.x > maxMapRadius || this.state.headPos.x < -mapRadius || this.state.headPos.y < -maxMapRadius || this.state.headPos.y > maxMapRadius) {
+			const { x: playerX, y: playerY } = this.state.headPos
+
+			if (playerX > maxMapRadius || playerX < -mapRadius || playerY < -maxMapRadius || playerY > maxMapRadius) {
 				console.error("Player outside of map bounds!")
 				this.client?.leave(4004, "Player out of bounds!")
 			}
 
-			this.loadZones()
+			let currentZone = this.room.zoneManager.findZoneByCoords(playerX, playerY)!
+			if (currentZone != this.lastZone) this.loadZones()
+
+			this.lastZone = currentZone
 
 			// Make sure we don't have a NONE status effect
 			this.state.statusEffects.delete(EStatusEffect.NONE)
 
 			// let nearestOrb = this.room.orbSpawner.findNearest(
 			// 	{
-			// 		x: this.state.headPos.x,
-			// 		y: this.state.headPos.y
+			// 		x: playerX,
+			// 		y: playerY
 			// 	},
 			// 	normalPickupRadius,
 			// 	this.state.statusEffects.size >= 1

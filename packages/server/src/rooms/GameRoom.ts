@@ -39,25 +39,25 @@ export class GameRoom extends Room<GameRoomState> {
 		this.orbSpawner.spawnInitialOrbs()
 
 		this.onMessage("rotate", (client, data: RotateData) => {
-			// 	const controller = this.serverControllers.get(client.sessionId)
-			// 	if (controller == undefined) return
-			//
-			// 	controller.calculateAngle(data.pointer)
+			const controller = this.serverControllers.get(client.sessionId)
+			if (controller == undefined) return
+
+			controller.calculateAngle(data.pointer)
 		})
 
-		// this.onMessage("startSprint", (client) => {
-		// 	const controller = this.serverControllers.get(client.sessionId)
-		// 	if (controller == undefined) return
-		//
-		// 	controller.startSprint()
-		// })
-		//
-		// this.onMessage("stopSprint", (client) => {
-		// 	const controller = this.serverControllers.get(client.sessionId)
-		// 	if (controller == undefined) return
-		//
-		// 	controller.stopSprint()
-		// })
+		this.onMessage("startSprint", (client) => {
+			const controller = this.serverControllers.get(client.sessionId)
+			if (controller == undefined) return
+
+			controller.startSprint()
+		})
+
+		this.onMessage("stopSprint", (client) => {
+			const controller = this.serverControllers.get(client.sessionId)
+			if (controller == undefined) return
+
+			controller.stopSprint()
+		})
 	}
 
 	private tick() {
