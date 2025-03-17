@@ -22,7 +22,7 @@ export class Debugger {
 		this.coords = scene.add
 			.text(0, 0, "", {
 				fontSize: "24px",
-				fill: "#fff",
+				color: "#fff",
 				backgroundColor: "#00000080",
 				padding: { x: 10, y: 5 }
 			})
@@ -32,9 +32,9 @@ export class Debugger {
 			.setVisible(this.isDebugVisible)
 
 		this.gridGraphics = scene.add.graphics().setVisible(this.isDebugVisible)
-		this.zoneInfo = scene.add.text(0, 0, "", { fontSize: "16px", fill: "#00ff00" }).setOrigin(0.5).setDepth(2).setVisible(this.isDebugVisible)
+		this.zoneInfo = scene.add.text(0, 0, "", { fontSize: "16px", color: "#00ff00" }).setOrigin(0.5).setDepth(2).setVisible(this.isDebugVisible)
 
-		this.drawZones()
+		// this.drawZones()
 	}
 
 	registerInputs() {

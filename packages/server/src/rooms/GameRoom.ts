@@ -16,7 +16,7 @@ import { ZoneManager } from "../controllers/ZoneManager.ts"
 
 import { tickRate } from "../util"
 
-Encoder.BUFFER_SIZE = 30 * 1024
+// Encoder.BUFFER_SIZE = 30 * 1024
 
 export class GameRoom extends Room<GameRoomState> {
 	maxClients = 100

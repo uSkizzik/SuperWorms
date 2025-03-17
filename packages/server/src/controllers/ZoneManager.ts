@@ -1,5 +1,3 @@
-import { Client } from "@colyseus/core"
-
 import { Controller } from "./Controller"
 
 import { GameRoom } from "../rooms/GameRoom"

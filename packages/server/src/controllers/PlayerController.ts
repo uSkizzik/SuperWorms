@@ -31,7 +31,7 @@ export class PlayerController extends Controller {
 	// Radius of zones the player can see
 	static readonly viewRadius = 6
 
-	private lastZone: ZoneState
+	private lastZone?: ZoneState
 
 	constructor(client: string | Client, state: PlayerState, room: GameRoom, actor?: PlayerActor) {
 		super()
