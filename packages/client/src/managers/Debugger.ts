@@ -9,14 +9,30 @@ import { GameScene } from "../scenes/GameScene.ts"
 export class Debugger {
 	private readonly scene: GameScene
 
+	private isDebugVisible: boolean = import.meta.env.DEV
+
+	private readonly coords: Phaser.GameObjects.Text
+
 	private readonly gridGraphics: Phaser.GameObjects.Graphics
 	private readonly zoneInfo: Phaser.GameObjects.Text
 
 	constructor(scene: GameScene) {
 		this.scene = scene
 
-		this.gridGraphics = scene.add.graphics()
-		this.zoneInfo = scene.add.text(0, 0, "", { fontSize: "16px", fill: "#00ff00" }).setOrigin(0.5).setDepth(2)
+		this.coords = scene.add
+			.text(0, 0, "", {
+				fontSize: "24px",
+				fill: "#fff",
+				backgroundColor: "#00000080",
+				padding: { x: 10, y: 5 }
+			})
+			.setOrigin(0)
+			.setScrollFactor(0)
+			.setDepth(2)
+			.setVisible(this.isDebugVisible)
+
+		this.gridGraphics = scene.add.graphics().setVisible(this.isDebugVisible)
+		this.zoneInfo = scene.add.text(0, 0, "", { fontSize: "16px", fill: "#00ff00" }).setOrigin(0.5).setDepth(2).setVisible(this.isDebugVisible)
 
 		this.drawZones()
 	}
@@ -38,7 +54,10 @@ export class Debugger {
 		})
 
 		this.scene.input.keyboard?.on("keydown-Z", () => {
-			this.gridGraphics.setVisible(!this.gridGraphics.visible)
+			this.isDebugVisible = !this.isDebugVisible
+
+			this.gridGraphics.setVisible(this.isDebugVisible)
+			this.zoneInfo.setVisible(this.isDebugVisible)
 		})
 	}
 
@@ -70,5 +89,7 @@ export class Debugger {
 		this.gridGraphics.setDepth(1)
 	}
 
-	tick() {}
+	tick() {
+		this.coords.setText(`X = ${Math.round(this.scene.localPlayer?.controller?.state.headPos.x!)}; Y = ${Math.round(this.scene.localPlayer?.controller?.state.headPos.y!)}`)
+	}
 }

@@ -26,7 +26,7 @@ export class GameScene extends Phaser.Scene {
 	// Map of sessionIds to player controllers
 	players = new Map<string, PlayerController>()
 
-	bg?: Phaser.GameObjects.TileSprite
+	hudCamera: Phaser.Cameras.Scene2D.Camera
 
 	constructor() {
 		super("GameScene")
@@ -41,7 +41,7 @@ export class GameScene extends Phaser.Scene {
 		this.debugger = new Debugger(this)
 		this.debugger.registerInputs()
 
-		this.bg = this.add.tileSprite(0, 0, PlayerController.viewRadius * 2 * zoneSize, PlayerController.viewRadius * 2 * zoneSize, "bg").setDepth(0)
+		this.add.tileSprite(0, 0, PlayerController.viewRadius * 2 * zoneSize, PlayerController.viewRadius * 2 * zoneSize, "bg").setDepth(0)
 
 		// Spawn local player actor
 		this.localPlayer = new PlayerActor(this, 0, 0)
@@ -87,11 +87,6 @@ export class GameScene extends Phaser.Scene {
 	update(time: number, delta: number) {
 		super.update(time, delta)
 		this.debugger?.tick()
-
-		if (this.bg) {
-			// this.bg.x = this.cameras.main.x
-			// this.bg.y = this.cameras.main.y
-		}
 	}
 
 	spawnOrb(orb: OrbState) {

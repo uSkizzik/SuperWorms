@@ -71,8 +71,8 @@ export class PlayerController extends Controller {
 
 			const { x: playerX, y: playerY } = this.state.headPos
 
-			if (playerX > maxMapRadius || playerX < -mapRadius || playerY < -maxMapRadius || playerY > maxMapRadius) {
-				console.error("Player outside of map bounds!")
+			if (playerX > maxMapRadius || playerX < -mapRadius || playerY > maxMapRadius || playerY < -maxMapRadius) {
+				console.error(`Player outside of map bounds with coords ${playerX} / ${playerY}!`)
 				this.client?.leave(4004, "Player out of bounds!")
 			}
 
