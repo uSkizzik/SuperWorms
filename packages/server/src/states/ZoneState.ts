@@ -1,4 +1,4 @@
-import { CollectionSchema, type, view } from "@colyseus/schema"
+import { CollectionSchema, type } from "@colyseus/schema"
 
 import { PointState } from "./PointState"
 import { OrbState } from "./OrbState.ts"
