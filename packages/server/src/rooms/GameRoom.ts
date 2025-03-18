@@ -36,7 +36,6 @@ export class GameRoom extends Room<GameRoomState> {
 		this.setSimulationInterval(this.tick, tickRate)
 
 		this.zoneManager.serverInitZones()
-		this.orbSpawner.spawnInitialOrbs()
 
 		this.onMessage("rotate", (client, data: RotateData) => {
 			const controller = this.serverControllers.get(client.sessionId)

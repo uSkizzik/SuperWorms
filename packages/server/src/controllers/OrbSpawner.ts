@@ -42,7 +42,7 @@ export class OrbSpawner extends Controller {
 			orb.score = !isPowerup ? randomInt(minOrbSpawnScore, maxOrbSpawnScore) : 10
 			orb.statusEffect = isPowerup ? randomInt(1, Object.keys(EStatusEffect).length - 2) : 0
 
-			// this.spawnOrb(orb)
+			this.spawnOrb(orb)
 		}
 	}
 
