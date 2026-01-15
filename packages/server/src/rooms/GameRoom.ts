@@ -1,6 +1,6 @@
 import { JWT } from "@colyseus/auth"
 import { Room, Client } from "@colyseus/core"
-import { Encoder, StateView } from "@colyseus/schema"
+import { StateView } from "@colyseus/schema"
 
 import { GameRoomState } from "../states/GameRoomState"
 import { PlayerState } from "../states/PlayerState"
